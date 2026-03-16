@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 5% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 105 43% 97%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 72 76% 57%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 60 5% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 60 5% 96%;
+    --muted-foreground: 218 11% 46%;
+
+    --accent: 72 76% 57%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 72 76% 57%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 218 11% 46%;
+    --sidebar-primary: 72 76% 57%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 105 43% 97%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 72 76% 57%;
+
+    /* Custom tokens */
+    --surface: 60 5% 96%;
+    --status-pending: 45 93% 47%;
+    --status-creating: 45 93% 47%;
+    --status-processing: 217 91% 60%;
+    --status-sent: 142 71% 45%;
+    --status-paid: 142 71% 45%;
+    --status-claimed: 142 71% 45%;
+    --status-active: 142 71% 45%;
+    --status-cancelled: 0 84% 60%;
+
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
