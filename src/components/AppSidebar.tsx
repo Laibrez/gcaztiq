@@ -61,9 +61,9 @@ export function AppSidebar() {
       <div className="flex h-14 items-center px-5">
         <Link to="/" className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-            <span className="text-xs font-bold text-primary-foreground">P</span>
+            <span className="text-xs font-bold text-primary-foreground">G</span>
           </div>
-          <span className="text-base font-semibold text-foreground">PayGrade</span>
+          <span className="text-base font-semibold text-foreground">GreenBee</span>
         </Link>
       </div>
 
@@ -91,7 +91,7 @@ export function AppSidebar() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-foreground">Derek Martinez</p>
-            <p className="truncate text-xs text-muted-foreground">derek@paygrade.io</p>
+            <p className="truncate text-xs text-muted-foreground">derek@greenbee.io</p>
           </div>
           <button className="text-muted-foreground transition-colors hover:text-foreground">
             <LogOut className="h-4 w-4" />

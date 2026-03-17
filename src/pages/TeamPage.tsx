@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 const members = [
   {
     name: 'Derek Martinez',
-    email: 'derek@paygrade.io',
+    email: 'derek@greenbee.io',
     initial: 'D',
     color: 'bg-primary',
     role: 'Admin',
@@ -31,7 +31,7 @@ const members = [
   },
   {
     name: 'Alex Chen',
-    email: 'alex@paygrade.io',
+    email: 'alex@greenbee.io',
     initial: 'A',
     color: 'bg-sky-400',
     role: 'Manager',
@@ -39,7 +39,7 @@ const members = [
   },
   {
     name: 'Sofia Reyes',
-    email: 'sofia@paygrade.io',
+    email: 'sofia@greenbee.io',
     initial: 'S',
     color: 'bg-pink-400',
     role: 'Viewer',

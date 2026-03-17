@@ -71,7 +71,7 @@ export default function SettingsPage() {
           </div>
           <div className="space-y-1.5">
             <Label className="text-sm font-medium">Company email</Label>
-            <Input defaultValue="derek@paygrade.io" />
+            <Input defaultValue="derek@greenbee.io" />
           </div>
           <div className="space-y-1.5">
             <Label className="text-sm font-medium">Logo</Label>
