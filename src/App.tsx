@@ -1,10 +1,17 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Toaster as Sonner } from '@/components/ui/sonner';
-import GetStartedPage from '@/pages/GetStartedPage';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+
+// Public pages
+import LoginPage from '@/pages/LoginPage';
+import SignupPage from '@/pages/SignupPage';
+
+// Protected pages
 import Dashboard from '@/pages/Dashboard';
+import GetStartedPage from '@/pages/GetStartedPage';
 import CreatorsPage from '@/pages/CreatorsPage';
 import CampaignsPage from '@/pages/CampaignsPage';
 import PayoutsPage from '@/pages/PayoutsPage';
@@ -23,18 +30,26 @@ const App = () => (
       <Sonner duration={4000} />
       <BrowserRouter>
         <Routes>
-          <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/get-started" element={<GetStartedPage />} />
-            <Route path="/creators" element={<CreatorsPage />} />
-            <Route path="/campaigns" element={<CampaignsPage />} />
-            <Route path="/payouts" element={<PayoutsPage />} />
-            <Route path="/quick-pay" element={<QuickPayPage />} />
-            <Route path="/wallet" element={<WalletPage />} />
-            <Route path="/team" element={<TeamPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/help" element={<HelpPage />} />
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* Protected routes — redirects to /login if no token */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/get-started" element={<GetStartedPage />} />
+              <Route path="/creators" element={<CreatorsPage />} />
+              <Route path="/campaigns" element={<CampaignsPage />} />
+              <Route path="/payouts" element={<PayoutsPage />} />
+              <Route path="/quick-pay" element={<QuickPayPage />} />
+              <Route path="/wallet" element={<WalletPage />} />
+              <Route path="/team" element={<TeamPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/help" element={<HelpPage />} />
+            </Route>
           </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

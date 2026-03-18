@@ -1,14 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY!;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in .env');
-}
-
-// Service-role client — full DB access, only used server-side
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+export const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY! // service key — backend only, never expose
+);

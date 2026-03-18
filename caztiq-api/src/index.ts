@@ -2,39 +2,33 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-
-import authRoutes from './routes/auth';
-import walletRoutes from './routes/wallet';
-import creatorsRoutes from './routes/creators';
-import campaignsRoutes from './routes/campaigns';
-import payoutsRoutes from './routes/payouts';
-import claimRoutes from './routes/claim';
-
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Middleware
 app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/wallet', walletRoutes);
-app.use('/api/creators', creatorsRoutes);
-app.use('/api/campaigns', campaignsRoutes);
-app.use('/api/payouts', payoutsRoutes);
-app.use('/api/claim', claimRoutes);
+import authRouter from './routes/auth';
+import walletRouter from './routes/wallet';
+import creatorsRouter from './routes/creators';
+import campaignsRouter from './routes/campaigns';
+import payoutsRouter from './routes/payouts';
+import claimRouter from './routes/claim';
 
-// Health check
+app.use('/api/auth', authRouter);
+app.use('/api/wallet', walletRouter);
+app.use('/api/creators', creatorsRouter);
+app.use('/api/campaigns', campaignsRouter);
+app.use('/api/payouts', payoutsRouter);
+app.use('/api/claim', claimRouter); // public — no auth
+
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-    console.log(`caztiq-api running on http://localhost:${PORT}`);
+app.listen(process.env.PORT || 3001, () => {
+    console.log('GreenBee API running on port', process.env.PORT || 3001);
 });
 
 export default app;
