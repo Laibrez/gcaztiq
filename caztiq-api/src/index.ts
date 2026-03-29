@@ -6,7 +6,12 @@ dotenv.config();
 
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+// Allow all origins to prevent issues with Vercel preview links or trailing slashes
+app.use(cors());
+
+import { stripeWebhook } from './routes/wallet';
+app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
+
 app.use(express.json());
 
 import authRouter from './routes/auth';
@@ -28,7 +33,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.listen(process.env.PORT || 3001, () => {
-    console.log('GreenBee API running on port', process.env.PORT || 3001);
+    console.log('Caztiq API running on port', process.env.PORT || 3001);
 });
 
 export default app;

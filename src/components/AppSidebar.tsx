@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
 const topNavItems = [
   { label: 'Get Started', icon: Circle, path: '/get-started' },
@@ -32,6 +34,20 @@ const bottomNavItems = [
 
 export function AppSidebar() {
   const location = useLocation();
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => api.get('/api/auth/me'),
+    retry: false,
+  });
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/api/auth/logout', {});
+    } catch (e) {}
+    localStorage.removeItem('gb_token');
+    window.location.href = '/login';
+  };
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -86,14 +102,24 @@ export function AppSidebar() {
 
       <div className="border-t border-border p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-            D
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-foreground">Derek Martinez</p>
-            <p className="truncate text-xs text-muted-foreground">derek@greenbee.io</p>
-          </div>
-          <button className="text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/profile" className="flex items-center gap-3 min-w-0 flex-1 group">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground uppercase group-hover:opacity-80 transition-opacity">
+              {profile?.name ? profile.name.charAt(0) : 'B'}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                {profile?.name || 'Brand Account'}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {profile?.email || '...'}
+              </p>
+            </div>
+          </Link>
+          <button 
+            onClick={handleLogout}
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+            title="Log out"
+          >
             <LogOut className="h-4 w-4" />
           </button>
         </div>

@@ -1,481 +1,177 @@
 import { useState } from 'react';
-import { Plus, X, Users, Video, DollarSign } from 'lucide-react';
+import { Plus, Users, Megaphone, Trash2, MoreHorizontal, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Switch } from '@/components/ui/switch';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
-
-interface Campaign {
-  name: string;
-  status: 'Active' | 'Completed' | 'Draft';
-  dateRange: string;
-  creatorCount: number;
-  avatars: { initial: string; color: string }[];
-  paymentStructure: string;
-  stats: { creators: number; videos: number; spent: number };
-}
-
-const campaignsData: Campaign[] = [
-  {
-    name: 'Summer TikTok Push',
-    status: 'Active',
-    dateRange: 'Mar 1 – Mar 31, 2026',
-    creatorCount: 8,
-    avatars: [
-      { initial: 'S', color: 'bg-pink-400' },
-      { initial: 'Y', color: 'bg-violet-400' },
-      { initial: 'M', color: 'bg-amber-400' },
-      { initial: 'O', color: 'bg-emerald-400' },
-    ],
-    paymentStructure: '$150/video + $0.30 CPM + bonuses',
-    stats: { creators: 8, videos: 47, spent: 12400 },
-  },
-  {
-    name: 'Product Review Series',
-    status: 'Active',
-    dateRange: 'Feb 15 – Mar 15, 2026',
-    creatorCount: 5,
-    avatars: [
-      { initial: 'D', color: 'bg-sky-400' },
-      { initial: 'C', color: 'bg-rose-400' },
-      { initial: 'H', color: 'bg-indigo-400' },
-    ],
-    paymentStructure: '$200/video flat',
-    stats: { creators: 5, videos: 22, spent: 4400 },
-  },
-  {
-    name: 'Unboxing Campaign',
-    status: 'Active',
-    dateRange: 'Mar 5 – Apr 5, 2026',
-    creatorCount: 4,
-    avatars: [
-      { initial: 'P', color: 'bg-orange-400' },
-      { initial: 'L', color: 'bg-purple-400' },
-      { initial: 'T', color: 'bg-lime-400' },
-    ],
-    paymentStructure: '$100/video + $0.50 CPM',
-    stats: { creators: 4, videos: 16, spent: 3200 },
-  },
-  {
-    name: 'Instagram Reels Sprint',
-    status: 'Completed',
-    dateRange: 'Jan 15 – Feb 15, 2026',
-    creatorCount: 6,
-    avatars: [
-      { initial: 'S', color: 'bg-pink-400' },
-      { initial: 'O', color: 'bg-emerald-400' },
-      { initial: 'C', color: 'bg-cyan-400' },
-    ],
-    paymentStructure: '$120/video + bonuses',
-    stats: { creators: 6, videos: 38, spent: 5880 },
-  },
-  {
-    name: 'Holiday Promo 2025',
-    status: 'Completed',
-    dateRange: 'Nov 1 – Dec 31, 2025',
-    creatorCount: 10,
-    avatars: [
-      { initial: 'H', color: 'bg-indigo-400' },
-      { initial: 'J', color: 'bg-teal-400' },
-      { initial: 'M', color: 'bg-amber-400' },
-      { initial: 'K', color: 'bg-red-400' },
-    ],
-    paymentStructure: '$250/month retainer + $0.30 CPM',
-    stats: { creators: 10, videos: 120, spent: 18500 },
-  },
-  {
-    name: 'Spring Launch Teaser',
-    status: 'Draft',
-    dateRange: 'Apr 1 – Apr 30, 2026',
-    creatorCount: 0,
-    avatars: [],
-    paymentStructure: 'Not yet configured',
-    stats: { creators: 0, videos: 0, spent: 0 },
-  },
-];
+import { useCampaigns, useCreateCampaign, useDeleteCampaign } from '@/hooks/useCampaigns';
 
 const statusStyles: Record<string, string> = {
-  Active: 'bg-status-sent/15 text-status-sent',
-  Completed: 'bg-muted text-muted-foreground',
-  Draft: 'bg-status-pending/15 text-status-pending',
+  active:    'bg-status-sent/15 text-status-sent',
+  completed: 'bg-muted text-muted-foreground',
+  paused:    'bg-status-pending/15 text-status-pending',
+  draft:     'bg-muted text-muted-foreground',
 };
 
-const creatorsList = [
-  { name: 'Sarah Jenkins', handle: '@sarah.j_lifestyle' },
-  { name: 'Yu Wei', handle: '@yuwei_eats' },
-  { name: 'David Russo', handle: '@drusso_tech' },
-  { name: 'Maria Gonzalez', handle: '@maria_glow' },
-  { name: 'Oliver Hayes', handle: '@oliver.creates' },
-  { name: 'Claire Thompson', handle: '@claire.designs' },
-  { name: 'Hana Tanaka', handle: '@hana.tokyo' },
-  { name: 'Priya Sharma', handle: '@priya.wellness' },
-  { name: 'Chen Wei', handle: '@chen.codes' },
-  { name: 'Luca Bianchi', handle: '@luca.films' },
-];
-
-const platforms = ['TikTok', 'Instagram', 'YouTube', 'Multi-Platform'];
+function formatDate(d?: string | null) {
+  if (!d) return null;
+  return new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
 
 export default function CampaignsPage() {
+  const { data: campaigns = [], isLoading } = useCampaigns();
+  const create = useCreateCampaign();
+  const remove = useDeleteCampaign();
+
   const [showNew, setShowNew] = useState(false);
-  const [selectedPlatform, setSelectedPlatform] = useState('');
-  const [paymentType, setPaymentType] = useState('');
-  const [showBonuses, setShowBonuses] = useState(false);
-  const [bonusTiers, setBonusTiers] = useState([{ views: '', bonus: '' }]);
-  const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
-  const [creatorSearch, setCreatorSearch] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [startsAt, setStartsAt] = useState('');
+  const [endsAt, setEndsAt] = useState('');
 
-  const handleCreate = () => {
-    setShowNew(false);
-    setSelectedPlatform('');
-    setPaymentType('');
-    setShowBonuses(false);
-    setBonusTiers([{ views: '', bonus: '' }]);
-    setSelectedCreators([]);
-    toast.success('Campaign created!');
+  const handleCreate = async () => {
+    if (!name.trim()) { toast.error('Campaign name is required'); return; }
+    try {
+      await create.mutateAsync({ name: name.trim(), description, starts_at: startsAt || undefined, ends_at: endsAt || undefined });
+      setShowNew(false);
+      setName(''); setDescription(''); setStartsAt(''); setEndsAt('');
+      toast.success('Campaign created!');
+    } catch (err: any) {
+      toast.error(err?.error || 'Failed to create campaign');
+    }
   };
 
-  const toggleCreator = (name: string) => {
-    setSelectedCreators((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
-    );
+  const handleDelete = async (id: string, n: string) => {
+    if (!confirm(`Delete campaign "${n}"?`)) return;
+    try {
+      await remove.mutateAsync(id);
+      toast.success('Campaign deleted');
+    } catch {
+      toast.error('Failed to delete campaign');
+    }
   };
-
-  const filteredCreators = creatorsList.filter(
-    (c) =>
-      !creatorSearch ||
-      c.name.toLowerCase().includes(creatorSearch.toLowerCase()) ||
-      c.handle.toLowerCase().includes(creatorSearch.toLowerCase())
-  );
 
   return (
     <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Campaigns</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your creator campaigns.
-          </p>
+          <p className="text-sm text-muted-foreground">Manage your creator campaigns.</p>
         </div>
-        <Button
-          className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-          onClick={() => setShowNew(true)}
-        >
+        <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => setShowNew(true)}>
           <Plus className="h-4 w-4" /> New Campaign
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {campaignsData.map((c, i) => (
-          <div
-            key={i}
-            className="space-y-4 rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-sm"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-foreground">{c.name}</h3>
-                  <span
-                    className={cn(
-                      'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
-                      statusStyles[c.status]
-                    )}
-                  >
-                    {c.status}
-                  </span>
-                </div>
-                <p className="mt-0.5 text-sm text-muted-foreground">{c.dateRange}</p>
-              </div>
-            </div>
+      {/* Grid */}
+      {isLoading ? (
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading campaigns…</div>
+      ) : (campaigns as any[]).length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border py-16 text-center">
+          <Megaphone className="h-10 w-10 text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground font-medium mb-1">Create your first campaign</p>
+          <p className="text-xs text-muted-foreground/70 mb-3 max-w-sm">Set up a campaign to easily organize and pay multiple creators at once.</p>
+          <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 mt-1" onClick={() => setShowNew(true)}>
+            <Plus className="h-4 w-4" /> New Campaign
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {(campaigns as any[]).map((c) => {
+            const creatorCount = c.campaign_creators?.length ?? 0;
 
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {c.avatars.map((a, j) => (
-                  <div
-                    key={j}
-                    className={cn(
-                      'flex h-7 w-7 items-center justify-center rounded-full border-2 border-card text-xs font-semibold text-white',
-                      a.color
+            return (
+              <div key={c.id} className="space-y-4 rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-sm">
+                <div className="flex items-start justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="truncate text-base font-semibold text-foreground">{c.name}</h3>
+                      <span className={cn('shrink-0 inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize', statusStyles[c.status] ?? 'bg-muted text-foreground')}>
+                        {c.status ?? 'active'}
+                      </span>
+                    </div>
+                    {(c.starts_at || c.ends_at) && (
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {formatDate(c.starts_at)}{c.ends_at ? ` – ${formatDate(c.ends_at)}` : ''}
+                      </p>
                     )}
-                  >
-                    {a.initial}
                   </div>
-                ))}
-              </div>
-              {c.creatorCount > c.avatars.length && (
-                <span className="text-xs text-muted-foreground">
-                  +{c.creatorCount - c.avatars.length} more
-                </span>
-              )}
-              {c.creatorCount === 0 && (
-                <span className="text-xs text-muted-foreground">
-                  No creators assigned
-                </span>
-              )}
-            </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="shrink-0 ml-2 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="gap-2 text-destructive" onClick={() => handleDelete(c.id, c.name)}>
+                        <Trash2 className="h-4 w-4" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
 
-            <p className="text-sm text-muted-foreground">{c.paymentStructure}</p>
+                {c.description && (
+                  <p className="text-sm text-muted-foreground line-clamp-2">{c.description}</p>
+                )}
 
-            <div className="grid grid-cols-3 gap-3 border-t border-border pt-2">
-              <div className="flex items-center gap-2">
-                <Users className="h-3.5 w-3.5 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Creators</p>
-                  <p className="text-sm font-semibold text-foreground">
-                    {c.stats.creators}
-                  </p>
+                <div className="flex items-center gap-2 border-t border-border pt-3">
+                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    {creatorCount} creator{creatorCount !== 1 ? 's' : ''}
+                  </span>
+                  {c.starts_at && new Date(c.starts_at) > new Date() && (
+                    <span className="ml-auto text-xs text-muted-foreground">Not started</span>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Video className="h-3.5 w-3.5 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Videos</p>
-                  <p className="text-sm font-semibold text-foreground">{c.stats.videos}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Total Spent</p>
-                  <p className="text-sm font-semibold text-foreground">
-                    ${c.stats.spent.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
+      {/* New campaign dialog */}
       <Dialog open={showNew} onOpenChange={setShowNew}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-lg max-h-[90vh] overflow-y-auto">
           <div className="space-y-5">
             <div>
               <h2 className="text-lg font-semibold text-foreground">New Campaign</h2>
-              <p className="text-sm text-muted-foreground">
-                Set up a new creator campaign.
-              </p>
+              <p className="text-sm text-muted-foreground">Set up a new creator campaign.</p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium">Campaign name</Label>
-                <Input placeholder="e.g. Summer TikTok Push" />
+                <Label className="text-sm font-medium">Campaign name <span className="text-destructive">*</span></Label>
+                <Input placeholder="e.g. Summer TikTok Push" value={name} onChange={e => setName(e.target.value)} />
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium">Platform</Label>
-                <div className="flex flex-wrap gap-2">
-                  {platforms.map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setSelectedPlatform(p)}
-                      className={cn(
-                        'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-                        selectedPlatform === p
-                          ? 'border-primary bg-primary/10 text-foreground'
-                          : 'border-border text-muted-foreground hover:border-muted-foreground/40'
-                      )}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
+                <Label className="text-sm font-medium">Description (optional)</Label>
+                <Textarea placeholder="Campaign goals and notes…" rows={2} value={description} onChange={e => setDescription(e.target.value)} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-sm font-medium">Start date</Label>
-                  <Input type="date" />
+                  <Input type="date" value={startsAt} onChange={e => setStartsAt(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-sm font-medium">End date</Label>
-                  <Input type="date" />
+                  <Input type="date" value={endsAt} onChange={e => setEndsAt(e.target.value)} />
                 </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-sm font-medium">Description (optional)</Label>
-                <Textarea placeholder="Campaign goals and notes..." rows={2} />
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Payment structure</Label>
-                <Select value={paymentType} onValueChange={setPaymentType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select payment type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="flat">Flat fee per video</SelectItem>
-                    <SelectItem value="retainer">Retainer (monthly)</SelectItem>
-                    <SelectItem value="cpm">Performance (CPM)</SelectItem>
-                    <SelectItem value="hybrid">Hybrid (retainer + CPM)</SelectItem>
-                    <SelectItem value="custom">Custom</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {paymentType === 'flat' && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      Amount per video
-                    </Label>
-                    <Input type="number" placeholder="0.00" />
-                  </div>
-                )}
-                {paymentType === 'retainer' && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Monthly amount</Label>
-                    <Input type="number" placeholder="0.00" />
-                  </div>
-                )}
-                {paymentType === 'cpm' && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      Rate per 1,000 views
-                    </Label>
-                    <Input type="number" placeholder="0.00" />
-                  </div>
-                )}
-                {paymentType === 'hybrid' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">
-                        Monthly retainer
-                      </Label>
-                      <Input type="number" placeholder="0.00" />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">CPM rate</Label>
-                      <Input type="number" placeholder="0.00" />
-                    </div>
-                  </div>
-                )}
-                {paymentType === 'custom' && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      Describe payment structure
-                    </Label>
-                    <Textarea
-                      placeholder="e.g. $150/video + $0.30 CPM + performance bonuses"
-                      rows={2}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium">Bonus tiers</Label>
-                  <Switch
-                    checked={showBonuses}
-                    onCheckedChange={setShowBonuses}
-                    className="scale-75"
-                  />
-                </div>
-                {showBonuses && (
-                  <div className="space-y-2">
-                    {bonusTiers.map((tier, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          If views reach
-                        </span>
-                        <Input
-                          type="number"
-                          placeholder="10,000"
-                          className="w-28"
-                          value={tier.views}
-                          onChange={(e) => {
-                            const t = [...bonusTiers];
-                            t[idx].views = e.target.value;
-                            setBonusTiers(t);
-                          }}
-                        />
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          pay $
-                        </span>
-                        <Input
-                          type="number"
-                          placeholder="50"
-                          className="w-20"
-                          value={tier.bonus}
-                          onChange={(e) => {
-                            const t = [...bonusTiers];
-                            t[idx].bonus = e.target.value;
-                            setBonusTiers(t);
-                          }}
-                        />
-                        {bonusTiers.length > 1 && (
-                          <button
-                            onClick={() =>
-                              setBonusTiers(bonusTiers.filter((_, j) => j !== idx))
-                            }
-                            className="text-muted-foreground hover:text-destructive"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      onClick={() =>
-                        setBonusTiers([...bonusTiers, { views: '', bonus: '' }])
-                      }
-                      className="rounded bg-primary/80 px-2 py-1 text-xs text-primary-foreground transition-colors hover:bg-primary"
-                    >
-                      + Add tier
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Assign creators</Label>
-                <Input
-                  placeholder="Search creators..."
-                  value={creatorSearch}
-                  onChange={(e) => setCreatorSearch(e.target.value)}
-                  className="text-sm"
-                />
-                <div className="max-h-36 space-y-1 overflow-y-auto rounded-lg border border-border p-2">
-                  {filteredCreators.map((c) => (
-                    <label
-                      key={c.name}
-                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-muted"
-                    >
-                      <Checkbox
-                        checked={selectedCreators.includes(c.name)}
-                        onCheckedChange={() => toggleCreator(c.name)}
-                      />
-                      <span className="text-sm text-foreground">{c.name}</span>
-                      <span className="text-xs text-muted-foreground">{c.handle}</span>
-                    </label>
-                  ))}
-                </div>
-                {selectedCreators.length > 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {selectedCreators.length} creator
-                    {selectedCreators.length > 1 ? 's' : ''} selected
-                  </p>
-                )}
               </div>
             </div>
 
             <Button
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={handleCreate}
+              disabled={!name.trim() || create.isPending}
             >
-              Create Campaign
+              {create.isPending ? 'Creating…' : 'Create Campaign'}
             </Button>
           </div>
         </DialogContent>

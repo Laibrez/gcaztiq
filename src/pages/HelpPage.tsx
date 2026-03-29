@@ -28,7 +28,7 @@ export default function HelpPage() {
       <div>
         <h1 className="text-xl font-semibold text-foreground">Get Help</h1>
         <p className="text-sm text-muted-foreground">
-          We're here to help you get the most out of GreenBee.
+          We're here to help you get the most out of Caztiq.
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export default function HelpPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Email us directly at{' '}
-        <span className="font-medium text-foreground">support@greenbee.io</span>
+        <span className="font-medium text-foreground">support@caztiq.com</span>
       </p>
     </div>
   );

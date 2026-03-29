@@ -8,6 +8,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 // Public pages
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
+import ClaimPage from '@/pages/ClaimPage';
 
 // Protected pages
 import Dashboard from '@/pages/Dashboard';
@@ -21,6 +22,7 @@ import WalletPage from '@/pages/WalletPage';
 import TeamPage from '@/pages/TeamPage';
 import HelpPage from '@/pages/HelpPage';
 import NotFound from '@/pages/NotFound';
+import ProfilePage from '@/pages/ProfilePage';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/claim/:token" element={<ClaimPage />} />
 
           {/* Protected routes — redirects to /login if no token */}
           <Route element={<ProtectedRoute />}>
@@ -47,6 +50,7 @@ const App = () => (
               <Route path="/team" element={<TeamPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/help" element={<HelpPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
 

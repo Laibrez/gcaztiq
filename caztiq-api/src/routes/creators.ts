@@ -1,53 +1,58 @@
-import { Router } from 'express';
-import { authenticate } from '../middleware/authenticate';
-import { supabase } from '../lib/supabase';
+import { Router } from 'express'
+import { supabase } from '../lib/supabase'
+import { authenticate } from '../middleware/authenticate'
 
-const router = Router();
+const router = Router()
+router.use(authenticate)
 
-// GET /api/creators — list all creators for the authenticated brand
-router.get('/', authenticate, async (req, res) => {
-    const user = (req as any).user;
+router.get('/', async (req, res) => {
+  const user = (req as any).user
+  const { data } = await supabase
+    .from('creators')
+    .select('*, payouts(amount_cents, status)')
+    .eq('brand_id', user.id)
+    .order('created_at', { ascending: false })
+  res.json(data || [])
+})
 
-    const { data, error } = await supabase
-        .from('creators')
-        .select('*')
-        .eq('brand_id', user.id)
-        .order('created_at', { ascending: false });
+router.post('/invite', async (req, res) => {
+  const user = (req as any).user
+  const { email, name } = req.body
+  if (!email) return res.status(400).json({ error: 'Email required' })
 
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-});
+  const { data, error } = await supabase
+    .from('creators')
+    .insert({ brand_id: user.id, email: email.toLowerCase(), name })
+    .select()
+    .single()
 
-// POST /api/creators — invite a new creator
-router.post('/', authenticate, async (req, res) => {
-    const user = (req as any).user;
-    const { email, name, rate } = req.body;
+  if (error?.code === '23505') {
+    return res.status(400).json({ error: 'Creator already added' })
+  }
+  if (error) return res.status(500).json({ error: error.message })
 
-    if (!email || !name) {
-        return res.status(400).json({ error: 'email and name are required' });
-    }
+  res.json(data)
+})
 
-    const { data, error } = await supabase
-        .from('creators')
-        .insert({ brand_id: user.id, email, name, rate })
-        .select()
-        .single();
+router.get('/:id', async (req, res) => {
+  const user = (req as any).user
+  const { data } = await supabase
+    .from('creators')
+    .select('*, payouts(*)')
+    .eq('id', req.params.id)
+    .eq('brand_id', user.id)
+    .single()
+  if (!data) return res.status(404).json({ error: 'Not found' })
+  res.json(data)
+})
 
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(201).json(data);
-});
+router.delete('/:id', async (req, res) => {
+  const user = (req as any).user
+  await supabase.from('creators')
+    .delete()
+    .eq('id', req.params.id)
+    .eq('brand_id', user.id)
+  res.json({ success: true })
+})
 
-// DELETE /api/creators/:id — remove a creator
-router.delete('/:id', authenticate, async (req, res) => {
-    const { id } = req.params;
-
-    const { error } = await supabase
-        .from('creators')
-        .delete()
-        .eq('id', id);
-
-    if (error) return res.status(500).json({ error: error.message });
-    res.json({ success: true });
-});
-
-export default router;
+export default router

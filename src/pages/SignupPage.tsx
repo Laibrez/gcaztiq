@@ -38,7 +38,7 @@ export default function SignupPage() {
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
                         <span className="text-sm font-bold text-primary-foreground">G</span>
                     </div>
-                    <span className="text-xl font-semibold text-foreground">GreenBee</span>
+                    <span className="text-xl font-semibold text-foreground">Caztiq</span>
                 </div>
 
                 <div className="space-y-1">

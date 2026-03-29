@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Upload, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Upload, Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,27 +13,26 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import { api } from '@/lib/api';
 
 const tabs = ['Profile', 'Payment Rails', 'Notifications', 'Billing'];
 
 const paymentRails = [
   { name: 'PayPal', desc: 'Send payouts to creators via PayPal', connected: true },
   { name: 'Stripe', desc: 'Process payments through Stripe', connected: true },
-  {
-    name: 'Payoneer',
-    desc: 'International payouts via Payoneer',
-    connected: false,
-  },
+  { name: 'Payoneer', desc: 'International payouts via Payoneer', connected: false },
   { name: 'Wise', desc: 'Low-cost international transfers', connected: false },
-  {
-    name: 'Revolut',
-    desc: 'Fast business payments via Revolut',
-    connected: false,
-  },
+  { name: 'Revolut', desc: 'Fast business payments via Revolut', connected: false },
 ];
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Profile');
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [companyName, setCompanyName] = useState('');
+  const [companyEmail, setCompanyEmail] = useState('');
+  const [currency, setCurrency] = useState('USD');
+  const [timezone, setTimezone] = useState('EST');
   const [notifications, setNotifications] = useState({
     payouts: true,
     signups: true,
@@ -41,6 +40,25 @@ export default function SettingsPage() {
     weekly: false,
     lowBalance: true,
   });
+
+  useEffect(() => {
+    api.get('/api/auth/me').then((data: any) => {
+      setCompanyName(data.company_name || data.email?.split('@')[0] || '');
+      setCompanyEmail(data.email || '');
+    }).finally(() => setProfileLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await api.post('/api/auth/profile', { company_name: companyName });
+      toast.success('Settings saved!');
+    } catch {
+      toast.error('Failed to save — please try again');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -65,57 +83,63 @@ export default function SettingsPage() {
 
       {activeTab === 'Profile' && (
         <div className="max-w-lg space-y-5">
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Company name</Label>
-            <Input defaultValue="GreenBee Demo Co" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Company email</Label>
-            <Input defaultValue="derek@greenbee.io" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Logo</Label>
-            <div className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted transition-colors hover:border-muted-foreground/40">
-              <Upload className="h-6 w-6 text-muted-foreground" />
+          {profileLoading ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading profile…
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Preferred currency</Label>
-              <Select defaultValue="USD">
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                  <SelectItem value="GBP">GBP</SelectItem>
-                  <SelectItem value="CAD">CAD</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Timezone</Label>
-              <Select defaultValue="EST">
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="EST">Eastern (EST)</SelectItem>
-                  <SelectItem value="CST">Central (CST)</SelectItem>
-                  <SelectItem value="MST">Mountain (MST)</SelectItem>
-                  <SelectItem value="PST">Pacific (PST)</SelectItem>
-                  <SelectItem value="UTC">UTC</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <Button
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-            onClick={() => toast.success('Settings saved!')}
-          >
-            Save Changes
-          </Button>
+          ) : (
+            <>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">Company name</Label>
+                <Input value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder="Your company name" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">Company email</Label>
+                <Input value={companyEmail} disabled className="opacity-70" />
+                <p className="text-xs text-muted-foreground">Email cannot be changed here.</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">Logo</Label>
+                <div className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted transition-colors hover:border-muted-foreground/40">
+                  <Upload className="h-6 w-6 text-muted-foreground" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-medium">Preferred currency</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USD">USD</SelectItem>
+                      <SelectItem value="EUR">EUR</SelectItem>
+                      <SelectItem value="GBP">GBP</SelectItem>
+                      <SelectItem value="CAD">CAD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-medium">Timezone</Label>
+                  <Select value={timezone} onValueChange={setTimezone}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="EST">Eastern (EST)</SelectItem>
+                      <SelectItem value="CST">Central (CST)</SelectItem>
+                      <SelectItem value="MST">Mountain (MST)</SelectItem>
+                      <SelectItem value="PST">Pacific (PST)</SelectItem>
+                      <SelectItem value="UTC">UTC</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving…</> : 'Save Changes'}
+              </Button>
+            </>
+          )}
         </div>
       )}
 
@@ -228,7 +252,7 @@ export default function SettingsPage() {
             </h3>
             <div className="flex flex-col items-center py-8 text-center">
               <p className="text-sm text-muted-foreground">
-                No invoices — GreenBee is free for brands
+                No invoices — Caztiq is free for brands
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Revenue comes from a 5% fee on creator payouts
