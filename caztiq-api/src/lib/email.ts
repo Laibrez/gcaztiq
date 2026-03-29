@@ -15,7 +15,7 @@ export async function sendPayoutEmail(data: PayoutEmailData) {
   const claimUrl = `${process.env.FRONTEND_URL}/claim/${data.claimToken}`
 
   return resend.emails.send({
-    from: `Caztiq Payments <${process.env.FROM_EMAIL}>`,
+    from: 'Caztiq Payments <payments@caztiq.com>',
     to: data.to,
     subject: `${data.brandName} sent you ${data.amountFormatted}`,
     html: `
@@ -53,7 +53,7 @@ export async function sendPayoutClaimedEmail(data: {
   amountFormatted: string
 }) {
   return resend.emails.send({
-    from: `Caztiq Payments <${process.env.FROM_EMAIL}>`,
+    from: 'Caztiq Payments <payments@caztiq.com>',
     to: data.to,
     subject: `Payment claimed — ${data.amountFormatted}`,
     html: `
