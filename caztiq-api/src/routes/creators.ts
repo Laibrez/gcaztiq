@@ -69,6 +69,9 @@ router.delete('/:id', async (req, res) => {
 
   if (error) {
     console.error('Creator deletion failed:', error.message)
+    if (error.code === '23503') {
+      return res.status(400).json({ error: 'Cannot delete creator: this creator already has associated payouts. Cancel or complete payouts first.' })
+    }
     return res.status(500).json({ error: error.message })
   }
 
