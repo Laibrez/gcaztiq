@@ -60,8 +60,10 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const user = (req as any).user
-  const { error } = await supabase.from('creators')
-    .delete()
+  console.log(`Attempting to delete creator ${req.params.id} for brand ${user.id}`);
+  
+  const { error, count } = await supabase.from('creators')
+    .delete({ count: 'exact' })
     .eq('id', req.params.id)
     .eq('brand_id', user.id)
 
@@ -70,6 +72,12 @@ router.delete('/:id', async (req, res) => {
     return res.status(500).json({ error: error.message })
   }
 
+  if (count === 0) {
+    console.warn(`Creator ${req.params.id} not found or not owned by brand ${user.id}`);
+    return res.status(404).json({ error: 'Creator not found or already deleted' });
+  }
+
+  console.log(`Successfully deleted creator ${req.params.id}`);
   res.json({ success: true })
 })
 
