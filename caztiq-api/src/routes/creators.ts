@@ -60,27 +60,47 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const user = (req as any).user
-  console.log(`Attempting to delete creator ${req.params.id} for brand ${user.id}`);
+  const creatorId = req.params.id
+  console.log(`Force deleting creator ${creatorId} for brand ${user.id}`);
   
+  // 1. Get all payouts for this creator
+  const { data: payouts } = await supabase
+    .from('payouts')
+    .select('id')
+    .eq('creator_id', creatorId)
+    .eq('brand_id', user.id)
+
+  if (payouts && payouts.length > 0) {
+    const payoutIds = payouts.map(p => p.id)
+    
+    // 2. Unlink transactions (set reference_id to null)
+    await supabase.from('wallet_transactions')
+      .update({ reference_id: null })
+      .in('reference_id', payoutIds)
+      .eq('brand_id', user.id)
+
+    // 3. Delete payouts
+    await supabase.from('payouts')
+      .delete()
+      .in('id', payoutIds)
+  }
+
+  // 4. Delete creator
   const { error, count } = await supabase.from('creators')
     .delete({ count: 'exact' })
-    .eq('id', req.params.id)
+    .eq('id', creatorId)
     .eq('brand_id', user.id)
 
   if (error) {
-    console.error('Creator deletion failed:', error.message)
-    if (error.code === '23503') {
-      return res.status(400).json({ error: 'Cannot delete creator: this creator already has associated payouts. Cancel or complete payouts first.' })
-    }
+    console.error('Creator force deletion failed:', error.message)
     return res.status(500).json({ error: error.message })
   }
 
   if (count === 0) {
-    console.warn(`Creator ${req.params.id} not found or not owned by brand ${user.id}`);
     return res.status(404).json({ error: 'Creator not found or already deleted' });
   }
 
-  console.log(`Successfully deleted creator ${req.params.id}`);
+  console.log(`Successfully force deleted creator ${creatorId}`);
   res.json({ success: true })
 })
 
