@@ -70,7 +70,16 @@ export default function QuickPayPage() {
     formData.append('file', f);
 
     try {
-      const res = await api.post('/api/payouts/bulk/validate', formData);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app'}/api/payouts/bulk/validate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('gb_token')}`
+        },
+        body: formData
+      });
+      
+      const res = await response.json();
+      if (!response.ok) throw res;
       setBulkResult(res);
     } catch (err: any) {
       toast.error(err?.error || 'Failed to validate CSV');
