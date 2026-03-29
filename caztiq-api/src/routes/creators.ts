@@ -60,10 +60,16 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const user = (req as any).user
-  await supabase.from('creators')
+  const { error } = await supabase.from('creators')
     .delete()
     .eq('id', req.params.id)
     .eq('brand_id', user.id)
+
+  if (error) {
+    console.error('Creator deletion failed:', error.message)
+    return res.status(500).json({ error: error.message })
+  }
+
   res.json({ success: true })
 })
 
