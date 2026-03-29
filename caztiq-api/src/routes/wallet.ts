@@ -109,7 +109,7 @@ router.post('/topup/intent', authenticate, async (req, res) => {
 
       if (insertError) {
         console.error('Self-healing insert failed:', insertError);
-        return res.status(500).json({ error: 'Could not create brand profile' });
+        return res.status(500).json({ error: `Could not create brand profile: ${insertError.message}` });
       }
       brand = newBrand;
     }
