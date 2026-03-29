@@ -2,7 +2,9 @@ const BASE = import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.r
 
 export const api = {
     async post(path: string, body: any, authed = true) {
-        const isFormData = body instanceof FormData;
+        const isFormData = body instanceof FormData || (body && body.constructor && body.constructor.name === 'FormData');
+        if (isFormData) console.log(`[API] Sending FormData to ${path}`);
+
         const headers: Record<string, string> = isFormData ? {} : { 'Content-Type': 'application/json' };
         if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gb_token')}`;
         
