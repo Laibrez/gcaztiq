@@ -20,14 +20,7 @@ export function useInviteCreator() {
 export function useDeleteCreator() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app'}/api/creators/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${localStorage.getItem('gb_token')}` },
-      })
-      if (!res.ok) throw await res.json()
-      return res.json()
-    },
+    mutationFn: (id: string) => api.delete(`/api/creators/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['creators'] }),
   })
 }

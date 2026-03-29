@@ -68,8 +68,8 @@ export default function CreatorsPage() {
     try {
       await remove.mutateAsync(id);
       toast.success('Creator removed');
-    } catch {
-      toast.error('Failed to remove creator');
+    } catch (err: any) {
+      toast.error(err?.error || err?.message || 'Failed to remove creator');
     }
   };
 
