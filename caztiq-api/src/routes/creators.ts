@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { supabase } from '../lib/supabase'
 import { authenticate } from '../middleware/authenticate'
+import { sendCreatorInviteEmail } from '../lib/email'
 
 const router = Router()
 router.use(authenticate)
@@ -30,6 +31,17 @@ router.post('/invite', async (req, res) => {
     return res.status(400).json({ error: 'Creator already added' })
   }
   if (error) return res.status(500).json({ error: error.message })
+
+  const { data: brand } = await supabase
+    .from('brands')
+    .select('company_name')
+    .eq('id', user.id)
+    .single()
+
+  await sendCreatorInviteEmail({
+    to: email,
+    brandName: brand?.company_name || 'A brand'
+  }).catch(err => console.error('Invite email failed:', err))
 
   res.json(data)
 })
