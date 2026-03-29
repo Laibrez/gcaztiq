@@ -3,7 +3,14 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+import fs from 'fs';
+
+const rootEnvPath = path.resolve(__dirname, '../../.env');
+if (fs.existsSync(rootEnvPath)) {
+    dotenv.config({ path: rootEnvPath });
+} else {
+    dotenv.config(); // Fallback to current directory or environment variables (Production)
+}
 
 const app = express();
 app.use(helmet());
