@@ -99,7 +99,11 @@ router.post('/topup/intent', authenticate, async (req, res) => {
     }
 
     if (!brand) {
-      console.log(`Self-healing missing brand record for ${user.id}`);
+      console.log(`[DIAGNOSTIC] Missing brand record for ${user.id}. Attempting insert...`);
+      // Validate key role in log (masked for safety)
+      const keyPrefix = (process.env.SUPABASE_SERVICE_KEY || '').substring(0, 10);
+      console.log(`[DIAGNOSTIC] Using SUPABASE_SERVICE_KEY prefix: ${keyPrefix}...`);
+
       const { data: newBrand, error: insertError } = await supabase.from('brands').insert({
         id: user.id,
         email: user.email || 'unknown@example.com',
