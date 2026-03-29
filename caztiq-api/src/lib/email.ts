@@ -73,7 +73,7 @@ export async function sendCreatorInviteEmail(data: {
   brandName: string
 }) {
   return resend.emails.send({
-    from: `Caztiq <${process.env.FROM_EMAIL}>`,
+    from: 'Caztiq <payments@caztiq.com>',
     to: data.to,
     subject: `${data.brandName} added you as a creator`,
     html: `
