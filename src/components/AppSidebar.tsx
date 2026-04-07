@@ -45,7 +45,7 @@ export function AppSidebar() {
     try {
       await api.post('/api/auth/logout', {});
     } catch (e) {}
-    localStorage.removeItem('gb_token');
+    localStorage.removeItem('gc_token');
     window.location.href = '/login';
   };
 
@@ -79,7 +79,7 @@ export function AppSidebar() {
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
             <span className="text-xs font-bold text-primary-foreground">G</span>
           </div>
-          <span className="text-base font-semibold text-foreground">GreenBee</span>
+          <span className="text-base font-semibold text-foreground">Gcaztiq</span>
         </Link>
       </div>
 

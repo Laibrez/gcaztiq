@@ -23,7 +23,7 @@ export function useDeleteCampaign() {
     mutationFn: async (id: string) => {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app'}/api/campaigns/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${localStorage.getItem('gb_token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('gc_token')}` },
       })
       if (!res.ok) throw await res.json()
       return res.json()

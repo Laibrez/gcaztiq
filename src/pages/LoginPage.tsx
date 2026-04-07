@@ -15,7 +15,7 @@ export default function LoginPage() {
         setLoading(true);
         try {
             const data = await api.post('/api/auth/login', { email, password }, false);
-            localStorage.setItem('gb_token', data.session.access_token);
+            localStorage.setItem('gc_token', data.session.access_token);
             navigate('/');
         } catch (err: any) {
             setError(err?.error || 'Login failed');

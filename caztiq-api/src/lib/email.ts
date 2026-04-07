@@ -141,18 +141,23 @@ export async function sendCreatorInvitationEmail(data: {
   inviteToken: string
 }) {
   const inviteUrl = `${process.env.FRONTEND_URL}/invite/${data.inviteToken}`
+  const firstName = data.creatorName.split(' ')[0]
+  const dateStamp = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 
   return resend.emails.send({
     from: 'Caztiq <notifications@caztiq.com>',
     to: data.to,
     subject: `${data.brandName} wants to pay you on Caztiq`,
+    headers: {
+      'X-Entity-Ref-ID': data.inviteToken, // forces Gmail to treat each send as unique
+    },
     html: `
 <!DOCTYPE html>
 <html>
 <body style="font-family: Arial, sans-serif; background: #F9F8F4; margin: 0; padding: 40px 20px;">
   <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
     <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
-    <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${data.creatorName},</p>
+    <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
     <p style="color: #6B6B65; margin: 0 0 24px;">
       <strong style="color: #1A1A18;">${data.brandName}</strong> invited you to receive payments through Caztiq — a platform
       that makes creator payments fast and simple.
@@ -163,6 +168,9 @@ export async function sendCreatorInvitationEmail(data: {
     <a href="${inviteUrl}" style="display: block; background: #B6F542; color: #1A1A18; padding: 16px; border-radius: 10px; text-decoration: none; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 24px;">
       GET STARTED →
     </a>
+    <p style="color: #9B9B95; font-size: 12px; margin: 0 0 16px; word-break: break-all;">
+      Or copy this link: <a href="${inviteUrl}" style="color: #6B6B65;">${inviteUrl}</a>
+    </p>
     <p style="color: #6B6B65; font-size: 13px; margin: 0 0 8px;">Questions? Reply to this email.</p>
     <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
       — Caztiq

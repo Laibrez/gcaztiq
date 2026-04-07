@@ -6,7 +6,7 @@ export const api = {
         if (isFormData) console.log(`[API] Sending FormData to ${path}`);
 
         const headers: Record<string, string> = isFormData ? {} : { 'Content-Type': 'application/json' };
-        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gb_token')}`;
+        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gc_token')}`;
         
         const res = await fetch(`${BASE}${path}`, {
             method: 'POST',
@@ -14,7 +14,7 @@ export const api = {
             body: isFormData ? body : JSON.stringify(body),
         });
         if (res.status === 401) {
-            localStorage.removeItem('gb_token');
+            localStorage.removeItem('gc_token');
             window.location.href = '/login';
             return;
         }
@@ -24,12 +24,12 @@ export const api = {
 
     async get(path: string, authed = true) {
         const headers: Record<string, string> = {};
-        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gb_token')}`;
+        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gc_token')}`;
         const res = await fetch(`${BASE}${path}`, {
             headers,
         });
         if (res.status === 401) {
-            localStorage.removeItem('gb_token');
+            localStorage.removeItem('gc_token');
             window.location.href = '/login';
             return;
         }
@@ -39,13 +39,13 @@ export const api = {
 
     async delete(path: string, authed = true) {
         const headers: Record<string, string> = {};
-        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gb_token')}`;
+        if (authed) headers['Authorization'] = `Bearer ${localStorage.getItem('gc_token')}`;
         const res = await fetch(`${BASE}${path}`, {
             method: 'DELETE',
             headers,
         });
         if (res.status === 401) {
-            localStorage.removeItem('gb_token');
+            localStorage.removeItem('gc_token');
             window.location.href = '/login';
             return;
         }

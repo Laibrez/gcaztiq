@@ -17,7 +17,7 @@ export default function SignupPage() {
         try {
             const data = await api.post('/api/auth/signup', { email, password, company_name: companyName }, false);
             if (data.session?.access_token) {
-                localStorage.setItem('gb_token', data.session.access_token);
+                localStorage.setItem('gc_token', data.session.access_token);
                 navigate('/');
             } else {
                 // Supabase email confirmation required

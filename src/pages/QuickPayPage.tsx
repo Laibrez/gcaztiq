@@ -75,7 +75,7 @@ export default function QuickPayPage() {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app'}/api/payouts/bulk/validate`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('gb_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('gc_token')}`
         },
         body: formData
       });
