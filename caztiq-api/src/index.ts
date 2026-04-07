@@ -28,13 +28,15 @@ import creatorsRouter from './routes/creators';
 import campaignsRouter from './routes/campaigns';
 import payoutsRouter from './routes/payouts';
 import claimRouter from './routes/claim';
+import inviteRouter from './routes/invite';
 
 app.use('/api/auth', authRouter);
 app.use('/api/wallet', walletRouter);
 app.use('/api/creators', creatorsRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/payouts', payoutsRouter);
-app.use('/api/claim', claimRouter); // public — no auth
+app.use('/api/claim', claimRouter);   // public — no auth
+app.use('/api/invite', inviteRouter); // public — no auth
 
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });

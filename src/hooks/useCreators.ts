@@ -11,7 +11,7 @@ export function useCreators() {
 export function useInviteCreator() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (data: { email: string; name?: string }) =>
+    mutationFn: (data: { email: string; name?: string; country?: string }) =>
       api.post('/api/creators/invite', data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['creators'] }),
   })

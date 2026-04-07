@@ -42,6 +42,7 @@ export default function CreatorsPage() {
   const [showInvite, setShowInvite] = useState(false);
   const [inviteName, setInviteName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteCountry, setInviteCountry] = useState('US');
 
   const filtered = (creators as any[]).filter((c) => {
     if (statusFilter !== 'all' && c.status !== statusFilter) return false;
@@ -53,10 +54,11 @@ export default function CreatorsPage() {
   const handleInvite = async () => {
     if (!inviteEmail) { toast.error('Email is required'); return; }
     try {
-      await invite.mutateAsync({ email: inviteEmail, name: inviteName });
+      await invite.mutateAsync({ email: inviteEmail, name: inviteName, country: inviteCountry });
       setShowInvite(false);
       setInviteName('');
       setInviteEmail('');
+      setInviteCountry('US');
       toast.success("Creator added! They'll receive an email to complete setup.");
     } catch (err: any) {
       toast.error(err?.error || 'Failed to add creator');
@@ -110,7 +112,7 @@ export default function CreatorsPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              {['Creator', 'Email', 'Status', 'Total Earned', 'Actions'].map((h, i) => (
+              {['Creator', 'Email', 'Invitation Status', 'Total Earned', 'Actions'].map((h, i) => (
                 <th key={h} className={cn('px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground', i >= 3 ? 'text-right' : 'text-left')}>{h}</th>
               ))}
             </tr>
@@ -155,9 +157,10 @@ export default function CreatorsPage() {
                     </td>
                     <td className="px-5 py-3 text-sm text-muted-foreground">{c.email}</td>
                     <td className="px-5 py-3">
-                      <span className={cn('inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium capitalize', statusStyles[c.status] ?? 'bg-muted text-foreground')}>
-                        {c.status ?? 'pending'}
-                      </span>
+                      {c.invitation_status === 'confirmed'
+                        ? <span className="inline-flex items-center gap-1.5 rounded-full bg-status-sent/15 px-2.5 py-0.5 text-xs font-medium text-status-sent">✓ Confirmed</span>
+                        : <span className="inline-flex rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">Invite sent</span>
+                      }
                     </td>
                     <td className="px-5 py-3 text-right text-sm font-medium text-foreground">
                       ${(earned / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -200,6 +203,30 @@ export default function CreatorsPage() {
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium">Creator email <span className="text-destructive">*</span></Label>
                 <Input placeholder="creator@example.com" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">Country</Label>
+                <select
+                  value={inviteCountry}
+                  onChange={(e) => setInviteCountry(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="US">🇺🇸 United States</option>
+                  <option value="GB">🇬🇧 United Kingdom</option>
+                  <option value="CA">🇨🇦 Canada</option>
+                  <option value="AU">🇦🇺 Australia</option>
+                  <option value="MX">🇲🇽 Mexico</option>
+                  <option value="BR">🇧🇷 Brazil</option>
+                  <option value="DE">🇩🇪 Germany</option>
+                  <option value="FR">🇫🇷 France</option>
+                  <option value="IN">🇮🇳 India</option>
+                  <option value="PH">🇵🇭 Philippines</option>
+                  <option value="NG">🇳🇬 Nigeria</option>
+                  <option value="OTHER">🌍 Other</option>
+                </select>
+                {inviteCountry !== 'US' && (
+                  <p className="text-xs text-amber-600">International tax forms (W-8BEN) are coming soon. The creator will still receive their invitation.</p>
+                )}
               </div>
             </div>
             <Button

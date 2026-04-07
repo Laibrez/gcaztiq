@@ -9,7 +9,25 @@ import { Readable } from 'stream'
 
 const router = Router()
 router.use(authenticate)
-const upload = multer({ storage: multer.memoryStorage() })
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (_req, file, cb) => {
+    const ok = file.mimetype === 'text/csv'
+      || file.mimetype === 'application/vnd.ms-excel'
+      || file.originalname.endsWith('.csv')
+    if (!ok) return cb(new Error('Only .csv files are accepted'))
+    cb(null, true)
+  }
+})
+
+// Multer error handler wrapper
+function uploadSingle(req: any, res: any, next: any) {
+  upload.single('file')(req, res, (err: any) => {
+    if (err) return res.status(400).json({ error: err.message || 'File upload failed' })
+    next()
+  })
+}
 
 router.get('/', async (req, res) => {
   const user = (req as any).user
@@ -155,16 +173,17 @@ router.post('/:id/cancel', async (req, res) => {
 })
 
 // POST /api/payouts/bulk/validate — parse CSV and return preview + totals
-router.post('/bulk/validate', upload.single('file'), async (req, res) => {
+router.post('/bulk/validate', uploadSingle, async (req, res) => {
   const user = (req as any).user
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
 
   const rows: any[] = []
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
     Readable.from(req.file!.buffer.toString())
       .pipe(csv())
       .on('data', (row) => rows.push(row))
       .on('end', resolve)
+      .on('error', reject)
   })
 
   const validated = rows.map((row, i) => {

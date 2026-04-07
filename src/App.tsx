@@ -9,6 +9,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import ClaimPage from '@/pages/ClaimPage';
+import InvitePage from '@/pages/InvitePage';
 
 // Protected pages
 import Dashboard from '@/pages/Dashboard';
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/claim/:token" element={<ClaimPage />} />
+          <Route path="/invite/:token" element={<InvitePage />} />
 
           {/* Protected routes — redirects to /login if no token */}
           <Route element={<ProtectedRoute />}>

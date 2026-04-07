@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { supabase } from '../lib/supabase'
 import { authenticate } from '../middleware/authenticate'
-import { sendCreatorInviteEmail } from '../lib/email'
+import { sendCreatorInvitationEmail } from '../lib/email'
+import crypto from 'crypto'
 
 const router = Router()
 router.use(authenticate)
@@ -18,12 +19,22 @@ router.get('/', async (req, res) => {
 
 router.post('/invite', async (req, res) => {
   const user = (req as any).user
-  const { email, name } = req.body
+  const { email, name, country } = req.body
   if (!email) return res.status(400).json({ error: 'Email required' })
+
+  // Generate token in code so we can guarantee it's stored and emailed correctly
+  const inviteToken = crypto.randomUUID()
 
   const { data, error } = await supabase
     .from('creators')
-    .insert({ brand_id: user.id, email: email.toLowerCase(), name })
+    .insert({
+      brand_id: user.id,
+      email: email.toLowerCase(),
+      name,
+      country_code: country || null,
+      invitation_token: inviteToken,
+      invitation_status: 'pending',
+    })
     .select()
     .single()
 
@@ -38,10 +49,20 @@ router.post('/invite', async (req, res) => {
     .eq('id', user.id)
     .single()
 
-  await sendCreatorInviteEmail({
+  const brandName = brand?.company_name || 'A brand'
+
+  // Send invitation email with the exact token we stored
+  await sendCreatorInvitationEmail({
     to: email,
-    brandName: brand?.company_name || 'A brand'
-  }).catch(err => console.error('Invite email failed:', err))
+    creatorName: name || email,
+    brandName,
+    inviteToken,
+  }).catch(err => console.error('Invitation email failed:', err))
+
+  // Stamp invitation_sent_at
+  await supabase.from('creators')
+    .update({ invitation_sent_at: new Date().toISOString() })
+    .eq('id', data.id)
 
   res.json(data)
 })

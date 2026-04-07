@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { supabase } from '../lib/supabase'
-import { sendPayoutClaimedEmail } from '../lib/email'
+import { sendPayoutClaimedEmail, sendTaxConfirmationEmail } from '../lib/email'
 
 const router = Router()
 
@@ -31,12 +31,13 @@ router.get('/:token', async (req, res) => {
 
 // POST /api/claim/:token/tax-form
 router.post('/:token/tax-form', async (req, res) => {
-  const { form_type, legal_name, tax_id, address, country } = req.body
-  if (!form_type || !legal_name) return res.status(400).json({ error: 'Required fields missing' })
+  const { legal_name, tax_id, street, city, state, zip, certified } = req.body
+  if (!legal_name) return res.status(400).json({ error: 'Full legal name is required' })
+  if (!certified) return res.status(400).json({ error: 'Certification is required' })
 
   const { data: payout } = await supabase
     .from('payouts')
-    .select('creator_id')
+    .select('creator_id, brands(company_name), creators(email, name)')
     .eq('claim_token', req.params.token)
     .single()
 
@@ -44,12 +45,23 @@ router.post('/:token/tax-form', async (req, res) => {
 
   await supabase.from('creators')
     .update({
-      tax_form_type: form_type,
+      tax_form_type: 'w9',
       tax_form_submitted_at: new Date().toISOString(),
-      tax_form_data: { legal_name, tax_id, address, country },
-      country_code: country || 'US'
+      tax_form_data: { legal_name, tax_id, street, city, state, zip, certified },
+      country_code: 'US'
     })
     .eq('id', payout.creator_id)
+
+  // Send confirmation email to creator
+  const creator = (payout as any).creators
+  const brand = (payout as any).brands
+  if (creator?.email) {
+    sendTaxConfirmationEmail({
+      to: creator.email,
+      creatorName: creator.name || legal_name,
+      brandName: brand?.company_name || 'the brand',
+    }).catch(err => console.error('Tax confirmation email failed:', err))
+  }
 
   res.json({ success: true })
 })
@@ -82,12 +94,23 @@ router.post('/:token/submit', async (req, res) => {
     })
     .eq('id', payout.id)
 
+  // Increment tax_reporting total for this creator + year (1099 tracking)
+  const amountUsd = payout.creator_receives_cents / 100
+  const taxYear = new Date().getFullYear()
+  supabase.rpc('update_tax_reporting', {
+    p_creator_id: payout.creator_id,
+    p_amount_usd: amountUsd,
+    p_tax_year: taxYear,
+  }).then(({ error }) => {
+    if (error) console.error('tax_reporting update failed:', error.message)
+  })
+
   // Notify brand
   try {
     await sendPayoutClaimedEmail({
       to: payout.brands?.email,
       creatorEmail: payout.creators?.email,
-      amountFormatted: `$${(payout.creator_receives_cents / 100).toFixed(2)}`
+      amountFormatted: `$${amountUsd.toFixed(2)}`
     })
   } catch (e) {
     console.error('Claim notification email failed:', e)
