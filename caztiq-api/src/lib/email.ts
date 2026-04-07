@@ -229,38 +229,85 @@ export async function sendCampaignInviteEmail(data: {
   campaignDescription?: string
   startsAt?: string
   endsAt?: string
+  paymentConfig?: any
 }) {
   const firstName = data.creatorName.split(' ')[0]
   
-  let datesText = ''
-  if (data.startsAt && data.endsAt) datesText = `from ${new Date(data.startsAt).toLocaleDateString()} to ${new Date(data.endsAt).toLocaleDateString()}`
-  else if (data.startsAt) datesText = `starting ${new Date(data.startsAt).toLocaleDateString()}`
-  else if (data.endsAt) datesText = `ending ${new Date(data.endsAt).toLocaleDateString()}`
+  let datesText = 'TBD'
+  if (data.startsAt && data.endsAt) datesText = `${new Date(data.startsAt).toLocaleDateString()} to ${new Date(data.endsAt).toLocaleDateString()}`
+  else if (data.startsAt) datesText = `Starting ${new Date(data.startsAt).toLocaleDateString()}`
+  else if (data.endsAt) datesText = `Ending ${new Date(data.endsAt).toLocaleDateString()}`
+
+  let paymentHtml = ''
+  if (data.paymentConfig) {
+    const pc = data.paymentConfig
+    if (pc.paymentType === 'flat') paymentHtml += `<li style="margin-bottom: 4px;">$${pc.flatAmount || '0'} per video delivered</li>`
+    if (pc.paymentType === 'retainer') paymentHtml += `<li style="margin-bottom: 4px;">$${pc.monthlyAmount || '0'} monthly retainer</li>`
+    if (pc.paymentType === 'cpm') paymentHtml += `<li style="margin-bottom: 4px;">$${pc.cpmRate || '0'} CPM (per 1,000 views)</li>`
+    if (pc.paymentType === 'hybrid') paymentHtml += `<li style="margin-bottom: 4px;">$${pc.monthlyAmount || '0'} monthly retainer + $${pc.cpmRate || '0'} CPM</li>`
+    if (pc.paymentType === 'custom') paymentHtml += `<li style="margin-bottom: 4px;">${pc.customPaymentDesc || 'Custom structure'}</li>`
+    
+    if (pc.bonusTiers && pc.bonusTiers.length > 0) {
+      pc.bonusTiers.forEach((tier: any) => {
+        if (tier.views && tier.bonus) {
+          paymentHtml += `<li style="margin-bottom: 4px;">Bonus: Earn $${tier.bonus} if you hit ${Number(tier.views).toLocaleString()} views</li>`
+        }
+      })
+    }
+  }
+
+  if (paymentHtml) {
+    paymentHtml = `
+      <div style="margin-top: 24px;">
+        <h4 style="margin: 0 0 12px; color: #1A1A18; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">HERE'S HOW YOU'LL GET PAID:</h4>
+        <ul style="color: #6B6B65; font-size: 14px; margin: 0; padding-left: 20px; line-height: 1.5;">
+          ${paymentHtml}
+        </ul>
+      </div>
+    `
+  }
+
+  const platformText = data.paymentConfig?.platform || 'Not specified'
   
   return resend.emails.send({
-    from: 'Caztiq <notifications@caztiq.com>',
+    from: 'Gcaztiq <notifications@caztiq.com>',
     to: data.to,
-    subject: `You've been added to a new campaign: ${data.campaignName}`,
+    subject: `${data.brandName} has set up a campaign for you on Gcaztiq`,
     html: `
 <!DOCTYPE html>
 <html>
 <body style="font-family: Arial, sans-serif; background: #F9F8F4; margin: 0; padding: 40px 20px;">
   <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
-    <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
     <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
-    <p style="color: #6B6B65; margin: 0 0 24px;">
-      <strong style="color: #1A1A18;">${data.brandName}</strong> has added you to their new campaign on Caztiq.
+    <p style="color: #6B6B65; margin: 0 0 24px; line-height: 1.5;">
+      <strong style="color: #1A1A18;">${data.brandName}</strong> just created a campaign on Gcaztiq and assigned you to it. Here's what you need to know:
     </p>
     
-    <div style="background: #F9F8F4; border: 1px solid #E8E6DF; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-      <h3 style="margin: 0 0 12px; color: #1A1A18; font-size: 18px;">${data.campaignName}</h3>
-      ${datesText ? `<p style="margin: 0 0 12px; color: #6B6B65; font-size: 14px;"><strong>Timeline:</strong> ${datesText}</p>` : ''}
-      ${data.campaignDescription ? `<p style="margin: 0; color: #6B6B65; font-size: 14px; line-height: 1.5;">${data.campaignDescription}</p>` : ''}
+    <div style="background: #F9F8F4; border: 1px solid #E8E6DF; border-radius: 12px; padding: 24px;">
+      <p style="margin: 0 0 8px; color: #6B6B65; font-size: 14px; line-height: 1.5;">
+        <strong style="color: #1A1A18;">CAMPAIGN NAME:</strong> ${data.campaignName}
+      </p>
+      <p style="margin: 0 0 8px; color: #6B6B65; font-size: 14px; line-height: 1.5;">
+        <strong style="color: #1A1A18;">PLATFORMS:</strong> ${platformText}
+      </p>
+      <p style="margin: 0 0 8px; color: #6B6B65; font-size: 14px; line-height: 1.5;">
+        <strong style="color: #1A1A18;">DURATION:</strong> ${datesText}
+      </p>
+      <p style="margin: 0; color: #6B6B65; font-size: 14px; line-height: 1.5;">
+        <strong style="color: #1A1A18;">GOAL:</strong> ${data.campaignDescription || 'N/A'}
+      </p>
+
+      ${paymentHtml}
     </div>
 
-    <p style="color: #6B6B65; font-size: 14px; margin: 0 0 8px;">If you have any questions, you can reply directly to this email to reach the brand.</p>
-    <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      — Caztiq
+    <p style="color: #6B6B65; font-size: 14px; margin: 24px 0 0; line-height: 1.5;">
+      That's it. You've already discussed the details — this is just confirmation that <strong style="color: #1A1A18;">${data.brandName}</strong> has it set up in Gcaztiq.
+    </p>
+    <p style="color: #6B6B65; font-size: 14px; margin: 16px 0 0;">
+      Questions? Reply to this email.
+    </p>
+    <p style="color: #9B9B95; font-size: 14px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
+      —The Gcaztiq Team
     </p>
   </div>
 </body>

@@ -68,7 +68,9 @@ router.post('/', async (req, res) => {
               campaignName: name,
               campaignDescription: description,
               startsAt: starts_at,
-              endsAt: ends_at
+              endsAt: ends_at,
+              paymentConfig: payment_config
+
             }).catch(err => console.error(`Failed to send campaign email to ${creator.email}:`, err))
           }
           return Promise.resolve()
