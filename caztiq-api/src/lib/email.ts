@@ -219,3 +219,52 @@ export async function sendBrandCreatorConfirmedEmail(data: {
     `
   })
 }
+
+// Email 4: Informational email when a creator is added to a new campaign
+export async function sendCampaignInviteEmail(data: {
+  to: string
+  creatorName: string
+  brandName: string
+  campaignName: string
+  campaignDescription?: string
+  startsAt?: string
+  endsAt?: string
+}) {
+  const firstName = data.creatorName.split(' ')[0]
+  
+  let datesText = ''
+  if (data.startsAt && data.endsAt) datesText = `from ${new Date(data.startsAt).toLocaleDateString()} to ${new Date(data.endsAt).toLocaleDateString()}`
+  else if (data.startsAt) datesText = `starting ${new Date(data.startsAt).toLocaleDateString()}`
+  else if (data.endsAt) datesText = `ending ${new Date(data.endsAt).toLocaleDateString()}`
+  
+  return resend.emails.send({
+    from: 'Caztiq <notifications@caztiq.com>',
+    to: data.to,
+    subject: `You've been added to a new campaign: ${data.campaignName}`,
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background: #F9F8F4; margin: 0; padding: 40px 20px;">
+  <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
+    <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
+    <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
+    <p style="color: #6B6B65; margin: 0 0 24px;">
+      <strong style="color: #1A1A18;">${data.brandName}</strong> has added you to their new campaign on Caztiq.
+    </p>
+    
+    <div style="background: #F9F8F4; border: 1px solid #E8E6DF; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+      <h3 style="margin: 0 0 12px; color: #1A1A18; font-size: 18px;">${data.campaignName}</h3>
+      ${datesText ? `<p style="margin: 0 0 12px; color: #6B6B65; font-size: 14px;"><strong>Timeline:</strong> ${datesText}</p>` : ''}
+      ${data.campaignDescription ? `<p style="margin: 0; color: #6B6B65; font-size: 14px; line-height: 1.5;">${data.campaignDescription}</p>` : ''}
+    </div>
+
+    <p style="color: #6B6B65; font-size: 14px; margin: 0 0 8px;">If you have any questions, you can reply directly to this email to reach the brand.</p>
+    <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
+      — Caztiq
+    </p>
+  </div>
+</body>
+</html>
+    `
+  })
+}

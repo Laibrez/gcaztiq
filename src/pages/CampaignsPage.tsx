@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Users, Megaphone, Trash2, MoreHorizontal, X } from 'lucide-react';
+import { Plus, Users, Megaphone, Trash2, MoreHorizontal, X, CheckSquare, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { useCampaigns, useCreateCampaign, useDeleteCampaign } from '@/hooks/useCampaigns';
+import { useCreators } from '@/hooks/useCreators';
 
 const statusStyles: Record<string, string> = {
   active:    'bg-status-sent/15 text-status-sent',
@@ -24,6 +25,7 @@ function formatDate(d?: string | null) {
 
 export default function CampaignsPage() {
   const { data: campaigns = [], isLoading } = useCampaigns();
+  const { data: creators = [] } = useCreators();
   const create = useCreateCampaign();
   const remove = useDeleteCampaign();
 
@@ -32,14 +34,15 @@ export default function CampaignsPage() {
   const [description, setDescription] = useState('');
   const [startsAt, setStartsAt] = useState('');
   const [endsAt, setEndsAt] = useState('');
+  const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
 
   const handleCreate = async () => {
     if (!name.trim()) { toast.error('Campaign name is required'); return; }
     try {
-      await create.mutateAsync({ name: name.trim(), description, starts_at: startsAt || undefined, ends_at: endsAt || undefined });
+      await create.mutateAsync({ name: name.trim(), description, starts_at: startsAt || undefined, ends_at: endsAt || undefined, creator_ids: selectedCreators });
       setShowNew(false);
-      setName(''); setDescription(''); setStartsAt(''); setEndsAt('');
-      toast.success('Campaign created!');
+      setName(''); setDescription(''); setStartsAt(''); setEndsAt(''); setSelectedCreators([]);
+      toast.success(selectedCreators.length > 0 ? 'Campaign created and invites sent!' : 'Campaign created!');
     } catch (err: any) {
       toast.error(err?.error || 'Failed to create campaign');
     }
@@ -163,6 +166,36 @@ export default function CampaignsPage() {
                   <Label className="text-sm font-medium">End date</Label>
                   <Input type="date" value={endsAt} onChange={e => setEndsAt(e.target.value)} />
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">Invite Creators</Label>
+                <div className="max-h-40 overflow-y-auto rounded-md border border-input p-2 space-y-1">
+                  {(creators as any[]).length === 0 ? (
+                    <p className="p-2 text-xs text-muted-foreground text-center">No creators added yet.</p>
+                  ) : (
+                    (creators as any[]).map(c => {
+                      const isSelected = selectedCreators.includes(c.id);
+                      return (
+                        <div 
+                          key={c.id} 
+                          className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted cursor-pointer transition-colors"
+                          onClick={() => {
+                            if (isSelected) setSelectedCreators(prev => prev.filter(id => id !== c.id));
+                            else setSelectedCreators(prev => [...prev, c.id]);
+                          }}
+                        >
+                          {isSelected ? <CheckSquare className="h-4 w-4 text-primary" /> : <Square className="h-4 w-4 text-muted-foreground" />}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium truncate text-foreground">{c.name || 'Unnamed'}</p>
+                            <p className="text-xs text-muted-foreground truncate">{c.email}</p>
+                          </div>
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">Selected creators will automatically receive an email invitation to this campaign.</p>
               </div>
             </div>
 
