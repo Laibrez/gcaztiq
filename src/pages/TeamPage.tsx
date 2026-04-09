@@ -91,7 +91,7 @@ export default function TeamPage() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-muted/50">

@@ -32,7 +32,7 @@ const bottomNavItems = [
   { label: 'Get Help', icon: HelpCircle, path: '/help' },
 ];
 
-export function AppSidebar() {
+export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
   const location = useLocation();
 
   const { data: profile } = useQuery({
@@ -59,6 +59,7 @@ export function AppSidebar() {
     return (
       <Link
         to={item.path}
+        onClick={onInteract}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
           active
@@ -73,9 +74,9 @@ export function AppSidebar() {
   };
 
   return (
-    <aside className="flex w-[240px] flex-col border-r border-border bg-sidebar">
-      <div className="flex h-14 items-center px-5">
-        <Link to="/" className="flex items-center gap-2">
+    <>
+      <div className="flex h-14 items-center px-5 shrink-0">
+        <Link to="/" onClick={onInteract} className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
             <span className="text-xs font-bold text-primary-foreground">G</span>
           </div>
@@ -83,7 +84,7 @@ export function AppSidebar() {
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-0.5 px-3 py-2">
+      <nav className="flex-1 space-y-0.5 px-3 py-2 overflow-y-auto">
         {topNavItems.map((item) => (
           <NavItem key={item.path} item={item} />
         ))}
@@ -100,9 +101,9 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      <div className="border-t border-border p-3">
+      <div className="border-t border-border p-3 shrink-0">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-          <Link to="/profile" className="flex items-center gap-3 min-w-0 flex-1 group">
+          <Link to="/profile" onClick={onInteract} className="flex items-center gap-3 min-w-0 flex-1 group">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground uppercase group-hover:opacity-80 transition-opacity">
               {profile?.name ? profile.name.charAt(0) : 'B'}
             </div>
@@ -124,6 +125,14 @@ export function AppSidebar() {
           </button>
         </div>
       </div>
+    </>
+  );
+}
+
+export function AppSidebar() {
+  return (
+    <aside className="hidden md:flex w-[240px] flex-col border-r border-border bg-sidebar shrink-0">
+      <SidebarContent />
     </aside>
   );
 }
