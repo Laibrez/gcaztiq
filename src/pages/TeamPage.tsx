@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 const members = [
   {
     name: 'Derek Martinez',
-    email: 'derek@caztiq.com',
+    email: 'derek@rollio.com',
     initial: 'D',
     color: 'bg-primary',
     role: 'Admin',
@@ -31,7 +31,7 @@ const members = [
   },
   {
     name: 'Alex Chen',
-    email: 'alex@caztiq.com',
+    email: 'alex@rollio.com',
     initial: 'A',
     color: 'bg-sky-400',
     role: 'Manager',
@@ -39,7 +39,7 @@ const members = [
   },
   {
     name: 'Sofia Reyes',
-    email: 'sofia@caztiq.com',
+    email: 'sofia@rollio.com',
     initial: 'S',
     color: 'bg-pink-400',
     role: 'Viewer',

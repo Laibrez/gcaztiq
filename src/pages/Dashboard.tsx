@@ -12,17 +12,17 @@ const statusStyles: Record<string, string> = {
   pending:    'bg-status-pending/10 text-status-pending',
   processing: 'bg-status-processing/10 text-status-processing',
   sent:       'bg-status-sent/10 text-status-sent',
-  claimed:    'bg-emerald-600/10 text-emerald-700',
+  claimed:    'bg-[#ff9736]/15 text-[#b85a0d]',
   cancelled:  'bg-destructive/10 text-destructive',
 };
 
 const PIE_COLORS = [
-  'hsl(72,76%,57%)', 'hsl(210,80%,60%)', 'hsl(280,60%,65%)', 'hsl(30,90%,60%)',
+  '#ff9736', 'hsl(210,80%,60%)', 'hsl(280,60%,65%)', 'hsl(30,90%,60%)',
 ];
 
 const AVATAR_COLORS = [
   'bg-pink-400','bg-violet-400','bg-sky-400','bg-amber-400',
-  'bg-emerald-400','bg-rose-400','bg-indigo-400','bg-teal-400',
+  'bg-[#ff9736]','bg-rose-400','bg-indigo-400','bg-slate-400',
 ];
 function avatarColor(id: string) {
   let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
@@ -107,16 +107,16 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData}>
                   <defs>
-                    <linearGradient id="areaGreen" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(72,76%,57%)" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="hsl(72,76%,57%)" stopOpacity={0.02} />
+                    <linearGradient id="areaBrand" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ff9736" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="#ff9736" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(220,13%,91%)" />
                   <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'hsl(218,11%,46%)' }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: 'hsl(218,11%,46%)' }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
                   <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Amount']} contentStyle={{ backgroundColor: '#fff', border: '1px solid hsl(220,13%,91%)', borderRadius: '8px', fontSize: '13px' }} />
-                  <Area type="monotone" dataKey="amount" stroke="hsl(72,76%,57%)" strokeWidth={2} fill="url(#areaGreen)" />
+                  <Area type="monotone" dataKey="amount" stroke="#ff9736" strokeWidth={2} fill="url(#areaBrand)" />
                 </AreaChart>
               </ResponsiveContainer>
             )}

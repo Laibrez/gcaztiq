@@ -105,7 +105,7 @@ export default function InvitePage() {
 
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#B6F542]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ff9736]">
             <span className="text-lg font-black text-[#1A1A18]">C</span>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function InvitePage() {
           {/* Loading */}
           {step === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-[#B6F542]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#ff9736]" />
               <p className="text-sm text-[#6B6B65]">Loading your invitation…</p>
             </div>
           )}
@@ -124,7 +124,7 @@ export default function InvitePage() {
           {step === 'error' && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
               {errorType === 'already_confirmed'
-                ? <CheckCircle2 className="h-12 w-12 text-[#B6F542]" />
+                ? <CheckCircle2 className="h-12 w-12 text-[#ff9736]" />
                 : <XCircle className="h-12 w-12 text-red-400" />
               }
               <h2 className="text-xl font-bold text-[#1A1A18]">{errorMessages[errorType].title}</h2>
@@ -148,7 +148,7 @@ export default function InvitePage() {
                 {/* US option */}
                 <button
                   onClick={() => setStep('w9-form')}
-                  className="w-full flex items-center gap-4 rounded-xl border-2 border-[#E8E6DF] p-4 text-left transition-colors hover:border-[#B6F542] hover:bg-[#B6F542]/5"
+                  className="w-full flex items-center gap-4 rounded-xl border-2 border-[#E8E6DF] p-4 text-left transition-colors hover:border-[#ff9736] hover:bg-[#ff9736]/5"
                 >
                   <span className="text-2xl">🇺🇸</span>
                   <div>
@@ -171,7 +171,7 @@ export default function InvitePage() {
               </div>
 
               <p className="text-center text-xs text-[#9B9B95]">
-                International support is coming soon. Email <a href="mailto:support@caztiq.com" className="underline">support@caztiq.com</a> if you need help.
+                International support is coming soon. Email <a href="mailto:support@rollio.com" className="underline">support@rollio.com</a> if you need help.
               </p>
             </div>
           )}
@@ -182,7 +182,7 @@ export default function InvitePage() {
               <div>
                 <h2 className="text-xl font-bold text-[#1A1A18]">Tax Information (W-9)</h2>
                 <div className="mt-2 flex items-center gap-1.5 text-xs text-[#6B6B65]">
-                  <Shield className="h-3.5 w-3.5 text-[#B6F542] shrink-0" />
+                  <Shield className="h-3.5 w-3.5 text-[#ff9736] shrink-0" />
                   Your information is encrypted and secure.
                 </div>
               </div>
@@ -261,7 +261,7 @@ export default function InvitePage() {
                 {/* Certification */}
                 <label className={cn(
                   'flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors',
-                  certified ? 'border-[#B6F542] bg-[#B6F542]/5' : 'border-[#E8E6DF] hover:border-[#B6F542]/60'
+                  certified ? 'border-[#ff9736] bg-[#ff9736]/5' : 'border-[#E8E6DF] hover:border-[#ff9736]/60'
                 )}>
                   <input
                     type="checkbox"
@@ -281,7 +281,7 @@ export default function InvitePage() {
               </div>
 
               <Button
-                className="w-full bg-[#B6F542] text-[#1A1A18] font-bold hover:bg-[#a8e83a] disabled:opacity-50"
+                className="w-full bg-[#ff9736] text-[#1A1A18] font-bold hover:bg-[#ea8324] disabled:opacity-50"
                 onClick={handleSubmit}
                 disabled={!isValid || submitting}
               >
@@ -296,7 +296,7 @@ export default function InvitePage() {
           {/* Success */}
           {step === 'success' && info && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
-              <CheckCircle2 className="h-16 w-16 text-[#B6F542]" />
+              <CheckCircle2 className="h-16 w-16 text-[#ff9736]" />
               <h2 className="text-xl font-bold text-[#1A1A18]">You're all set! ✓</h2>
               <p className="text-sm text-[#6B6B65]">
                 Your tax information has been received. You'll get an email notification

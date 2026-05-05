@@ -43,7 +43,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.listen(process.env.PORT || 3001, () => {
-    console.log('Caztiq API running on port', process.env.PORT || 3001);
+    console.log('Rollio API running on port', process.env.PORT || 3001);
 });
 
 export default app;

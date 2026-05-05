@@ -118,7 +118,7 @@ export default function ClaimPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#B6F542]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ff9736]">
             <span className="text-lg font-black text-[#1A1A18]">C</span>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function ClaimPage() {
           {/* Loading */}
           {step === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-[#B6F542]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#ff9736]" />
               <p className="text-sm text-[#6B6B65]">Loading payment…</p>
             </div>
           )}
@@ -157,7 +157,7 @@ export default function ClaimPage() {
                 <p className="text-sm text-[#6B6B65]"><span className="font-medium text-[#1A1A18]">Note:</span> {payout.note}</p>
               )}
               <Button
-                className="w-full bg-[#B6F542] text-[#1A1A18] font-bold hover:bg-[#a8e83a]"
+                className="w-full bg-[#ff9736] text-[#1A1A18] font-bold hover:bg-[#ea8324]"
                 onClick={() => payout.requires_tax_form ? setStep('us-confirm') : setStep('payment')}
               >
                 Continue to claim →
@@ -179,7 +179,7 @@ export default function ClaimPage() {
                 Payments to US-based creators may be reported to the IRS. We collect your W-9 information to stay compliant — the same fields you'd fill out on a paper form.
               </div>
               <Button
-                className="w-full bg-[#B6F542] text-[#1A1A18] font-bold hover:bg-[#a8e83a]"
+                className="w-full bg-[#ff9736] text-[#1A1A18] font-bold hover:bg-[#ea8324]"
                 onClick={() => setStep('tax')}
               >
                 Yes, I'm US-based →
@@ -196,7 +196,7 @@ export default function ClaimPage() {
               <div>
                 <h2 className="text-xl font-bold text-[#1A1A18]">Tax Information (W-9)</h2>
                 <div className="mt-2 flex items-center gap-1.5 text-xs text-[#6B6B65]">
-                  <Shield className="h-3.5 w-3.5 text-[#B6F542]" />
+                  <Shield className="h-3.5 w-3.5 text-[#ff9736]" />
                   We need this to comply with IRS requirements. Your information is encrypted and secure.
                 </div>
               </div>
@@ -272,12 +272,12 @@ export default function ClaimPage() {
                 </div>
 
                 {/* Certification checkbox */}
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#E8E6DF] p-4 hover:border-[#B6F542]/60 transition-colors">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#E8E6DF] p-4 hover:border-[#ff9736]/60 transition-colors">
                   <input
                     type="checkbox"
                     checked={certified}
                     onChange={e => setCertified(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 accent-[#B6F542] shrink-0"
+                    className="mt-0.5 h-4 w-4 accent-[#ff9736] shrink-0"
                   />
                   <span className="text-sm text-[#6B6B65] leading-relaxed">
                     I certify under penalty of perjury that the information I have provided is correct and complete.
@@ -286,7 +286,7 @@ export default function ClaimPage() {
               </div>
 
               <Button
-                className="w-full bg-[#B6F542] text-[#1A1A18] font-bold hover:bg-[#a8e83a] disabled:opacity-50"
+                className="w-full bg-[#ff9736] text-[#1A1A18] font-bold hover:bg-[#ea8324] disabled:opacity-50"
                 onClick={handleTaxSubmit}
                 disabled={!w9Valid || taxLoading}
               >
@@ -308,7 +308,7 @@ export default function ClaimPage() {
                     onClick={() => { setSelectedMethod(m.id); setPaymentValue(''); }}
                     className={cn(
                       'rounded-xl border-2 p-4 text-left transition-colors',
-                      selectedMethod === m.id ? 'border-[#B6F542] bg-[#B6F542]/10' : 'border-[#E8E6DF] hover:border-[#B6F542]/50'
+                      selectedMethod === m.id ? 'border-[#ff9736] bg-[#ff9736]/10' : 'border-[#E8E6DF] hover:border-[#ff9736]/50'
                     )}
                   >
                     <p className="text-sm font-semibold text-[#1A1A18]">{m.label}</p>
@@ -326,7 +326,7 @@ export default function ClaimPage() {
                 </div>
               )}
               <Button
-                className="w-full bg-[#B6F542] text-[#1A1A18] font-bold hover:bg-[#a8e83a]"
+                className="w-full bg-[#ff9736] text-[#1A1A18] font-bold hover:bg-[#ea8324]"
                 onClick={handleClaim}
                 disabled={!selectedMethod || !paymentValue || submitting}
               >
@@ -338,7 +338,7 @@ export default function ClaimPage() {
           {/* Success */}
           {step === 'success' && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
-              <CheckCircle2 className="h-16 w-16 text-[#B6F542]" />
+              <CheckCircle2 className="h-16 w-16 text-[#ff9736]" />
               <h2 className="text-xl font-bold text-[#1A1A18]">You're all set! ✓</h2>
               <p className="text-sm text-[#6B6B65]">
                 Your tax information has been received. You'll get an email notification

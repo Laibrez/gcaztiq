@@ -80,7 +80,7 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
             <span className="text-xs font-bold text-primary-foreground">G</span>
           </div>
-          <span className="text-base font-semibold text-foreground">Gcaztiq</span>
+          <span className="text-base font-semibold text-foreground">Rollio</span>
         </Link>
       </div>
 

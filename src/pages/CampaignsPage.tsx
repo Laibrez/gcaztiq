@@ -21,7 +21,7 @@ const statusStyles: Record<string, string> = {
   draft: 'bg-status-pending/15 text-status-pending',
 };
 
-const colors = ['bg-pink-400', 'bg-violet-400', 'bg-sky-400', 'bg-amber-400', 'bg-emerald-400', 'bg-rose-400', 'bg-indigo-400', 'bg-teal-400', 'bg-orange-400', 'bg-cyan-400', 'bg-purple-400', 'bg-lime-400'];
+const colors = ['bg-pink-400', 'bg-violet-400', 'bg-sky-400', 'bg-amber-400', 'bg-[#ff9736]', 'bg-rose-400', 'bg-indigo-400', 'bg-slate-400', 'bg-orange-400', 'bg-cyan-400', 'bg-purple-400', 'bg-fuchsia-400'];
 
 export default function CampaignsPage() {
   const { data: campaigns = [], isLoading } = useCampaigns();

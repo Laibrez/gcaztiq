@@ -51,7 +51,7 @@ export default function GetStartedPage() {
     <div className="max-w-2xl space-y-6">
       <div>
         <h1 className="text-xl font-semibold text-foreground">
-          Get Started with Caztiq
+          Get Started with Rollio
         </h1>
         <p className="text-sm text-muted-foreground">
           Complete these steps to start paying your creators.
