@@ -60,9 +60,9 @@
     --rollio-green: #1B3B2F;
     --rollio-orange: #E85D26;
     --rollio-cream: #F5EFE0;
-    --rollio-teal-dark: #0D2240;
-    --rollio-teal: #132E52;
-    --rollio-teal-light: #1E5090;
+    --rollio-teal-dark: #1A3A5C;
+    --rollio-teal: #1F4772;
+    --rollio-teal-light: #3272B0;
 
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #0F2A4A 0%, #132E52 40%, #0D2240 100%);
+  background: linear-gradient(145deg, #1A3D60 0%, #1F4772 40%, #163356 100%);
   position: relative;
   overflow: hidden;
 }
