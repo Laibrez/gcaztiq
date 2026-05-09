@@ -25,63 +25,75 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background px-4">
-            <div className="w-full max-w-sm space-y-6">
+        <div className="auth-page" id="login-page">
+            <div className="auth-card">
                 {/* Logo */}
-                <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                        <span className="text-sm font-bold text-primary-foreground">G</span>
-                    </div>
-                    <span className="text-xl font-semibold text-foreground">Caztiq</span>
+                <div className="logo-row">
+                    <img src="/rollio-logo.svg" alt="Rollio" />
+                    <span>Rollio</span>
                 </div>
 
-                <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
-                    <p className="text-sm text-muted-foreground">Sign in to your account to continue</p>
-                </div>
+                <h1 className="auth-heading">Welcome back</h1>
+                <p className="auth-sub">Sign in to manage your creator payments</p>
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Email</label>
+                <form onSubmit={handleLogin}>
+                    {error && <div className="auth-error">{error}</div>}
+
+                    <div className="input-wrap">
+                        <label htmlFor="login-email">Email</label>
+                        <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="3" />
+                            <polyline points="22,7 12,14 2,7" />
+                        </svg>
                         <input
+                            id="login-email"
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="you@company.com"
-                            className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                     </div>
 
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Password</label>
+                    <div className="input-wrap">
+                        <label htmlFor="login-password">Password</label>
+                        <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
                         <input
+                            id="login-password"
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                     </div>
 
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    <a href="#" className="forgot-link">Forgot password?</a>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                        className="auth-btn"
+                        id="login-submit"
                     >
-                        {loading ? 'Signing in…' : 'Sign in'}
+                        {loading ? (
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" style={{ animation: 'spin 1s linear infinite' }}>
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray="31.4 31.4" strokeLinecap="round" />
+                                </svg>
+                                Signing in…
+                            </span>
+                        ) : 'Sign in'}
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-muted-foreground">
+                <div className="auth-footer">
                     Don't have an account?{' '}
-                    <Link to="/signup" className="font-medium text-primary hover:underline">
-                        Sign up
-                    </Link>
-                </p>
+                    <Link to="/signup">Sign up</Link>
+                </div>
             </div>
         </div>
     );

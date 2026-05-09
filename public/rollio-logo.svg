@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90" fill="none">
+  <!-- Dark green half-moon (left side) -->
+  <path d="M35 10 C15 10, 0 25, 0 45 C0 65, 15 80, 35 80 C35 80, 35 45, 35 10 Z" fill="#1B3B2F"/>
+  <!-- Orange body with spiral -->
+  <ellipse cx="65" cy="45" rx="42" ry="35" fill="#E85D26"/>
+  <!-- Spiral lines (cream/light colored) -->
+  <path d="M45 45 C45 30, 60 20, 75 20 C90 20, 100 30, 100 45 C100 58, 90 65, 78 65 C66 65, 58 58, 58 48 C58 38, 65 33, 72 33 C79 33, 83 38, 83 45 C83 50, 79 54, 74 54 C69 54, 66 50, 66 47 C66 44, 69 42, 71 42" stroke="#F5EFE0" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>

@@ -252,7 +252,7 @@ export default function SettingsPage() {
             </h3>
             <div className="flex flex-col items-center py-8 text-center">
               <p className="text-sm text-muted-foreground">
-                No invoices — Caztiq is free for brands
+                No invoices — Rollio is free for brands
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Revenue comes from a 5% fee on creator payouts

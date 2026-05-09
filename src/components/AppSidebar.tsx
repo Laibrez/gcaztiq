@@ -63,7 +63,7 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
           active
-            ? 'bg-primary text-primary-foreground'
+            ? 'bg-sidebar-primary text-sidebar-primary-foreground'
             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
         )}
       >
@@ -77,10 +77,10 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
     <>
       <div className="flex h-14 items-center px-5 shrink-0">
         <Link to="/" onClick={onInteract} className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-            <span className="text-xs font-bold text-primary-foreground">G</span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-sidebar-primary">
+            <span className="text-xs font-bold text-sidebar-primary-foreground">R</span>
           </div>
-          <span className="text-base font-semibold text-foreground">Gcaztiq</span>
+          <span className="text-base font-semibold text-foreground">Rollio</span>
         </Link>
       </div>
 

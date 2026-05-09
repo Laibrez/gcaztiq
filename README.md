@@ -1,8 +1,8 @@
-# Caztiq — Global Creator Payouts
+# Rollio — Global Creator Payouts
 
-Caztiq is a platform for brands to manage and pay creators.
+Rollio is a platform for brands to manage and pay creators.
 
-**URL**: [caztiq.com](https://caztiq.com)
+**URL**: [rollio.com](https://rollio.com)
 
 The payout infrastructure layer for the creator economy. Brands pay creators based on performance, not guesswork.
 

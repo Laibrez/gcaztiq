@@ -5,11 +5,10 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
+dotenv.config(); // Load local .env first (caztiq-api/.env)
 const rootEnvPath = path.resolve(__dirname, '../../.env');
 if (fs.existsSync(rootEnvPath)) {
     dotenv.config({ path: rootEnvPath });
-} else {
-    dotenv.config(); // Fallback to current directory or environment variables (Production)
 }
 
 const app = express();
@@ -43,7 +42,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.listen(process.env.PORT || 3001, () => {
-    console.log('Caztiq API running on port', process.env.PORT || 3001);
+    console.log('Rollio API running on port', process.env.PORT || 3001);
 });
 
 export default app;

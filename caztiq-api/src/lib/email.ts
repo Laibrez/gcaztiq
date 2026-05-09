@@ -15,7 +15,7 @@ export async function sendPayoutEmail(data: PayoutEmailData) {
   const claimUrl = `${process.env.FRONTEND_URL}/claim/${data.claimToken}`
 
   return resend.emails.send({
-    from: 'Caztiq Payments <payments@caztiq.com>',
+    from: 'Rollio Payments <payments@rollio.com>',
     to: data.to,
     subject: `${data.brandName} sent you ${data.amountFormatted}`,
     html: `
@@ -53,7 +53,7 @@ export async function sendPayoutClaimedEmail(data: {
   amountFormatted: string
 }) {
   return resend.emails.send({
-    from: 'Caztiq Payments <payments@caztiq.com>',
+    from: 'Rollio Payments <payments@rollio.com>',
     to: data.to,
     subject: `Payment claimed — ${data.amountFormatted}`,
     html: `
@@ -74,9 +74,9 @@ export async function sendCreatorInviteEmail(data: {
   brandName: string
 }) {
   return resend.emails.send({
-    from: 'Caztiq <notifications@caztiq.com>',
+    from: 'Rollio <notifications@rollio.com>',
     to: data.to,
-    subject: `${data.brandName} added you as a creator on Caztiq`,
+    subject: `${data.brandName} added you as a creator on Rollio`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -84,13 +84,13 @@ export async function sendCreatorInviteEmail(data: {
   <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
     <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
     <p style="color: #6B6B65; margin: 0 0 24px;">
-      <strong style="color: #1A1A18;">${data.brandName}</strong> has added you to their creator program on Caztiq.
+      <strong style="color: #1A1A18;">${data.brandName}</strong> has added you to their creator program on Rollio.
     </p>
     <p style="color: #6B6B65; margin: 0 0 24px;">
       When they send you a payment, you'll receive an email with a link to claim it. No account required.
     </p>
     <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      — Caztiq
+      — Rollio
     </p>
   </div>
 </body>
@@ -106,9 +106,9 @@ export async function sendTaxConfirmationEmail(data: {
   brandName: string
 }) {
   return resend.emails.send({
-    from: 'Caztiq <notifications@caztiq.com>',
+    from: 'Rollio <notifications@rollio.com>',
     to: data.to,
-    subject: `You're all set on Caztiq`,
+    subject: `You're all set on Rollio`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -124,7 +124,7 @@ export async function sendTaxConfirmationEmail(data: {
       You'll get an email each time a payment is sent to you. No login or account needed — everything happens by email.
     </p>
     <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      — Caztiq
+      — Rollio
     </p>
   </div>
 </body>
@@ -145,9 +145,9 @@ export async function sendCreatorInvitationEmail(data: {
   const dateStamp = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 
   return resend.emails.send({
-    from: 'Caztiq <notifications@caztiq.com>',
+    from: 'Rollio <notifications@rollio.com>',
     to: data.to,
-    subject: `${data.brandName} wants to pay you on Caztiq`,
+    subject: `${data.brandName} wants to pay you on Rollio`,
     headers: {
       'X-Entity-Ref-ID': data.inviteToken, // forces Gmail to treat each send as unique
     },
@@ -159,7 +159,7 @@ export async function sendCreatorInvitationEmail(data: {
     <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
     <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
     <p style="color: #6B6B65; margin: 0 0 24px;">
-      <strong style="color: #1A1A18;">${data.brandName}</strong> invited you to receive payments through Caztiq — a platform
+      <strong style="color: #1A1A18;">${data.brandName}</strong> invited you to receive payments through Rollio — a platform
       that makes creator payments fast and simple.
     </p>
     <p style="color: #6B6B65; margin: 0 0 24px;">
@@ -173,7 +173,7 @@ export async function sendCreatorInvitationEmail(data: {
     </p>
     <p style="color: #6B6B65; font-size: 13px; margin: 0 0 8px;">Questions? Reply to this email.</p>
     <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      — Caztiq
+      — Rollio
     </p>
   </div>
 </body>
@@ -192,9 +192,9 @@ export async function sendBrandCreatorConfirmedEmail(data: {
   const creatorsUrl = `${process.env.FRONTEND_URL}/creators`
 
   return resend.emails.send({
-    from: 'Caztiq <notifications@caztiq.com>',
+    from: 'Rollio <notifications@rollio.com>',
     to: data.to,
-    subject: `${data.creatorName} has confirmed on Caztiq`,
+    subject: `${data.creatorName} has confirmed on Rollio`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -205,13 +205,13 @@ export async function sendBrandCreatorConfirmedEmail(data: {
       <strong style="color: #1A1A18;">${data.creatorName}</strong> (${data.creatorEmail}) has accepted your invitation and submitted their tax form.
     </p>
     <p style="color: #6B6B65; margin: 0 0 24px;">
-      You can now send them payments through Caztiq.
+      You can now send them payments through Rollio.
     </p>
     <a href="${creatorsUrl}" style="display: block; background: #B6F542; color: #1A1A18; padding: 16px; border-radius: 10px; text-decoration: none; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 24px;">
       GO TO CREATORS PAGE →
     </a>
     <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      — Caztiq
+      — Rollio
     </p>
   </div>
 </body>
@@ -270,9 +270,9 @@ export async function sendCampaignInviteEmail(data: {
   const platformText = data.paymentConfig?.platform || 'Not specified'
   
   return resend.emails.send({
-    from: 'Gcaztiq <notifications@caztiq.com>',
+    from: 'Rollio <notifications@rollio.com>',
     to: data.to,
-    subject: `${data.brandName} has set up a campaign for you on Gcaztiq`,
+    subject: `${data.brandName} has set up a campaign for you on Rollio`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -280,7 +280,7 @@ export async function sendCampaignInviteEmail(data: {
   <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
     <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
     <p style="color: #6B6B65; margin: 0 0 24px; line-height: 1.5;">
-      <strong style="color: #1A1A18;">${data.brandName}</strong> just created a campaign on Gcaztiq and assigned you to it. Here's what you need to know:
+      <strong style="color: #1A1A18;">${data.brandName}</strong> just created a campaign on Rollio and assigned you to it. Here's what you need to know:
     </p>
     
     <div style="background: #F9F8F4; border: 1px solid #E8E6DF; border-radius: 12px; padding: 24px;">
@@ -301,13 +301,13 @@ export async function sendCampaignInviteEmail(data: {
     </div>
 
     <p style="color: #6B6B65; font-size: 14px; margin: 24px 0 0; line-height: 1.5;">
-      That's it. You've already discussed the details — this is just confirmation that <strong style="color: #1A1A18;">${data.brandName}</strong> has it set up in Gcaztiq.
+      That's it. You've already discussed the details — this is just confirmation that <strong style="color: #1A1A18;">${data.brandName}</strong> has it set up in Rollio.
     </p>
     <p style="color: #6B6B65; font-size: 14px; margin: 16px 0 0;">
       Questions? Reply to this email.
     </p>
     <p style="color: #9B9B95; font-size: 14px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">
-      —The Gcaztiq Team
+      —The Rollio Team
     </p>
   </div>
 </body>
