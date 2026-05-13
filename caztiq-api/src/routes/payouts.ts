@@ -7,6 +7,34 @@ import multer from 'multer'
 import csv from 'csv-parser'
 import { Readable } from 'stream'
 
+// ─── Tax Reporting Helper ────────────────────────────────────────────────────
+
+async function updateTaxReporting(
+  creatorId: string,
+  brandId: string,
+  amountCents: number
+) {
+  const currentYear = new Date().getFullYear()
+
+  const { data: existing } = await supabase
+    .from('tax_reporting')
+    .select('total_paid_cents')
+    .eq('creator_id', creatorId)
+    .eq('brand_id', brandId)
+    .eq('tax_year', currentYear)
+    .single()
+
+  const newTotal = (existing?.total_paid_cents || 0) + amountCents
+
+  await supabase.from('tax_reporting').upsert({
+    creator_id: creatorId,
+    brand_id: brandId,
+    tax_year: currentYear,
+    total_paid_cents: newTotal,
+    threshold_met: newTotal >= 60000, // $600 threshold for 1099
+  }, { onConflict: 'creator_id,brand_id,tax_year' })
+}
+
 const router = Router()
 router.use(authenticate)
 const upload = multer({
@@ -146,6 +174,10 @@ router.post('/single', async (req, res) => {
     .from('payouts')
     .update({ status: 'sent' })
     .eq('id', payout.id)
+
+  // Track tax reporting
+  updateTaxReporting(creator!.id, user.id, amount_cents)
+    .catch(err => console.error('Tax reporting update failed:', err))
 
   res.json(payout)
 })

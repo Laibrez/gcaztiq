@@ -24,3 +24,11 @@ export function useDeleteCreator() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['creators'] }),
   })
 }
+
+export function useResendInvite() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.post(`/api/creators/${id}/resend-invite`, {}),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['creators'] }),
+  })
+}

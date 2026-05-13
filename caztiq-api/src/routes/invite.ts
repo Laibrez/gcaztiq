@@ -50,17 +50,23 @@ router.get('/:token', async (req, res) => {
 router.post('/:token/submit-w9', async (req, res) => {
   const {
     full_legal_name,
+    business_name,
+    tax_classification,
     street_address,
     city,
     state,
     zip_code,
     ssn,
+    electronic_signature,
     certification_accepted,
   } = req.body
 
   // 1. Validate required fields
   if (!full_legal_name || !street_address || !city || !state || !zip_code || !ssn) {
     return res.status(400).json({ error: 'All fields are required' })
+  }
+  if (!electronic_signature) {
+    return res.status(400).json({ error: 'Electronic signature is required' })
   }
   if (!certification_accepted) {
     return res.status(400).json({ error: 'You must certify that the information is correct' })
@@ -105,11 +111,14 @@ router.post('/:token/submit-w9', async (req, res) => {
     creator_id: creator.id,
     form_type: 'W-9',
     full_legal_name: full_legal_name.trim(),
+    business_name: business_name?.trim() || null,
+    tax_classification: tax_classification || null,
     street_address: street_address.trim(),
     city: city.trim(),
     state: state.trim().toUpperCase(),
     zip_code: zip_code.trim(),
     ssn_encrypted,
+    electronic_signature: electronic_signature.trim(),
     certification_accepted: true,
   })
 
@@ -144,6 +153,99 @@ router.post('/:token/submit-w9', async (req, res) => {
   }
 
   // 9. Notify brand
+  if (brand?.email) {
+    sendBrandCreatorConfirmedEmail({
+      to: brand.email,
+      brandName,
+      creatorName,
+      creatorEmail: creator.email,
+    }).catch(err => console.error('Brand notification email failed:', err))
+  }
+
+  res.json({ success: true })
+})
+
+// ─── POST /api/invite/:token/submit-w8ben ─────────────────────────────────────
+
+router.post('/:token/submit-w8ben', async (req, res) => {
+  const {
+    full_legal_name,
+    country,
+    foreign_tax_id,
+    treaty_claim,
+    electronic_signature,
+    certification_accepted,
+  } = req.body
+
+  // 1. Validate required fields
+  if (!full_legal_name || !country) {
+    return res.status(400).json({ error: 'Full legal name and country are required' })
+  }
+  if (!electronic_signature) {
+    return res.status(400).json({ error: 'Electronic signature is required' })
+  }
+  if (!certification_accepted) {
+    return res.status(400).json({ error: 'You must certify that the information is correct' })
+  }
+
+  // 2. Load creator by token
+  const { data: creator } = await supabase
+    .from('creators')
+    .select('id, name, email, invitation_status, brand_id, brands(company_name, email)')
+    .eq('invitation_token', req.params.token)
+    .single()
+
+  if (!creator) {
+    return res.status(404).json({ error: 'invalid_token' })
+  }
+  if (creator.invitation_status === 'confirmed') {
+    return res.status(400).json({ error: 'already_confirmed' })
+  }
+
+  // 3. Insert into tax_forms
+  const { error: insertError } = await supabase.from('tax_forms').insert({
+    creator_id: creator.id,
+    form_type: 'W-8BEN',
+    full_legal_name: full_legal_name.trim(),
+    country: country.trim(),
+    foreign_tax_id: foreign_tax_id?.trim() || null,
+    treaty_claim: treaty_claim?.trim() || null,
+    electronic_signature: electronic_signature.trim(),
+    street_address: '',
+    city: '',
+  })
+
+  if (insertError) {
+    console.error('tax_forms insert failed:', insertError.message)
+    return res.status(500).json({ error: 'Failed to save tax form' })
+  }
+
+  // 4. Update creator status
+  await supabase
+    .from('creators')
+    .update({
+      invitation_status: 'confirmed',
+      confirmed_at: new Date().toISOString(),
+      tax_form_submitted_at: new Date().toISOString(),
+      tax_form_type: 'w8ben',
+      country_code: country.trim(),
+    })
+    .eq('id', creator.id)
+
+  const brand = (creator as any).brands
+  const creatorName = creator.name || full_legal_name
+  const brandName = brand?.company_name || 'the brand'
+
+  // 5. Send confirmation email to creator
+  if (creator.email) {
+    sendTaxConfirmationEmail({
+      to: creator.email,
+      creatorName,
+      brandName,
+    }).catch(err => console.error('Tax confirmation email failed:', err))
+  }
+
+  // 6. Notify brand
   if (brand?.email) {
     sendBrandCreatorConfirmedEmail({
       to: brand.email,
