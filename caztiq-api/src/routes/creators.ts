@@ -83,7 +83,7 @@ router.delete('/:id', async (req, res) => {
   const user = (req as any).user
   const creatorId = req.params.id
   console.log(`Force deleting creator ${creatorId} for brand ${user.id}`);
-  
+
   // 1. Get all payouts for this creator
   const { data: payouts } = await supabase
     .from('payouts')
@@ -93,7 +93,7 @@ router.delete('/:id', async (req, res) => {
 
   if (payouts && payouts.length > 0) {
     const payoutIds = payouts.map(p => p.id)
-    
+
     // 2. Unlink transactions (set reference_id to null)
     await supabase.from('wallet_transactions')
       .update({ reference_id: null })
@@ -122,37 +122,6 @@ router.delete('/:id', async (req, res) => {
   }
 
   console.log(`Successfully force deleted creator ${creatorId}`);
-  res.json({ success: true })
-})
-
-router.post('/:id/resend-invite', async (req, res) => {
-  const user = (req as any).user
-
-  const { data: creator } = await supabase
-    .from('creators')
-    .select('*, brands(company_name)')
-    .eq('id', req.params.id)
-    .eq('brand_id', user.id)
-    .single()
-
-  if (!creator) return res.status(404).json({ error: 'Not found' })
-  if (creator.invitation_status === 'confirmed') {
-    return res.status(400).json({ error: 'Creator has already confirmed' })
-  }
-
-  const brand = (creator as any).brands
-
-  await sendCreatorInvitationEmail({
-    to: creator.email,
-    creatorName: creator.name || creator.email,
-    brandName: brand?.company_name || 'A brand',
-    inviteToken: creator.invitation_token,
-  }).catch(err => console.error('Resend invitation email failed:', err))
-
-  await supabase.from('creators')
-    .update({ invitation_sent_at: new Date().toISOString() })
-    .eq('id', req.params.id)
-
   res.json({ success: true })
 })
 

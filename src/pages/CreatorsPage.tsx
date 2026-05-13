@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, MoreHorizontal, UserPlus, Trash2, Users, Send } from 'lucide-react';
+import { Search, MoreHorizontal, UserPlus, Trash2, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,12 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
-import { useCreators, useInviteCreator, useDeleteCreator, useResendInvite } from '@/hooks/useCreators';
+import { useCreators, useInviteCreator, useDeleteCreator } from '@/hooks/useCreators';
 
 const statusStyles: Record<string, string> = {
-  active:   'bg-status-sent/15 text-status-sent',
-  paused:   'bg-status-pending/15 text-status-pending',
-  pending:  'bg-muted text-muted-foreground',
+  active: 'bg-status-sent/15 text-status-sent',
+  paused: 'bg-status-pending/15 text-status-pending',
+  pending: 'bg-muted text-muted-foreground',
 };
 
 function getInitial(name: string) {
@@ -21,9 +21,9 @@ function getInitial(name: string) {
 }
 
 const AVATAR_COLORS = [
-  'bg-pink-400',   'bg-violet-400', 'bg-sky-400',    'bg-amber-400',
-  'bg-emerald-400','bg-rose-400',   'bg-indigo-400', 'bg-teal-400',
-  'bg-orange-400', 'bg-cyan-400',   'bg-purple-400', 'bg-lime-400',
+  'bg-pink-400', 'bg-violet-400', 'bg-sky-400', 'bg-amber-400',
+  'bg-emerald-400', 'bg-rose-400', 'bg-indigo-400', 'bg-teal-400',
+  'bg-orange-400', 'bg-cyan-400', 'bg-purple-400', 'bg-lime-400',
 ];
 
 function avatarColor(id: string) {
@@ -36,7 +36,6 @@ export default function CreatorsPage() {
   const { data: creators = [], isLoading } = useCreators();
   const invite = useInviteCreator();
   const remove = useDeleteCreator();
-  const resend = useResendInvite();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -73,15 +72,6 @@ export default function CreatorsPage() {
       toast.success('Creator removed');
     } catch (err: any) {
       toast.error(err?.error || err?.message || 'Failed to remove creator');
-    }
-  };
-
-  const handleResend = async (id: string, name: string) => {
-    try {
-      await resend.mutateAsync(id);
-      toast.success(`Invitation resent to ${name || 'creator'}`);
-    } catch (err: any) {
-      toast.error(err?.error || 'Failed to resend invite');
     }
   };
 
@@ -122,17 +112,17 @@ export default function CreatorsPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              {['Creator', 'Email', 'Invitation', 'Tax Form', 'Total Earned', 'Actions'].map((h, i) => (
-                <th key={h} className={cn('px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground', i >= 4 ? 'text-right' : 'text-left')}>{h}</th>
+              {['Creator', 'Email', 'Invitation Status', 'Total Earned', 'Actions'].map((h, i) => (
+                <th key={h} className={cn('px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground', i >= 3 ? 'text-right' : 'text-left')}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
-              <tr><td colSpan={6} className="py-12 text-center text-sm text-muted-foreground">Loading creators…</td></tr>
+              <tr><td colSpan={5} className="py-12 text-center text-sm text-muted-foreground">Loading creators…</td></tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center">
+                <td colSpan={5} className="py-12 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <Users className="h-8 w-8 text-muted-foreground/40" />
                     <p className="text-sm text-muted-foreground mb-3">
@@ -166,24 +156,11 @@ export default function CreatorsPage() {
                       </div>
                     </td>
                     <td className="px-5 py-3 text-sm text-muted-foreground">{c.email}</td>
-                    {/* Invitation Status */}
                     <td className="px-5 py-3">
                       {c.invitation_status === 'confirmed'
                         ? <span className="inline-flex items-center gap-1.5 rounded-full bg-status-sent/15 px-2.5 py-0.5 text-xs font-medium text-status-sent">✓ Confirmed</span>
-                        : <span className="inline-flex rounded-full bg-status-pending/15 px-2.5 py-0.5 text-xs font-medium text-status-pending">⏳ Pending</span>
+                        : <span className="inline-flex rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">Invite sent</span>
                       }
-                    </td>
-                    {/* Tax Form */}
-                    <td className="px-5 py-3">
-                      {c.tax_form_submitted_at ? (
-                        c.tax_form_type === 'w9'
-                          ? <span className="inline-flex items-center gap-1 rounded-full bg-status-sent/15 px-2.5 py-0.5 text-xs font-medium text-status-sent">W-9 ✓</span>
-                          : c.tax_form_type === 'w8ben'
-                            ? <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-xs font-medium text-sky-600">W-8BEN ✓</span>
-                            : <span className="inline-flex rounded-full bg-status-sent/15 px-2.5 py-0.5 text-xs font-medium text-status-sent">✓ Filed</span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-status-pending/15 px-2.5 py-0.5 text-xs font-medium text-status-pending">⚠️ Pending</span>
-                      )}
                     </td>
                     <td className="px-5 py-3 text-right text-sm font-medium text-foreground">
                       ${(earned / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -195,12 +172,7 @@ export default function CreatorsPage() {
                             <MoreHorizontal className="h-4 w-4" />
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-44">
-                          {c.invitation_status !== 'confirmed' && (
-                            <DropdownMenuItem className="gap-2" onClick={() => handleResend(c.id, c.name)}>
-                              <Send className="h-4 w-4" /> Resend invite
-                            </DropdownMenuItem>
-                          )}
+                        <DropdownMenuContent align="end" className="w-40">
                           <DropdownMenuItem className="gap-2 text-destructive" onClick={() => handleDelete(c.id, c.name)}>
                             <Trash2 className="h-4 w-4" /> Remove
                           </DropdownMenuItem>
@@ -252,6 +224,9 @@ export default function CreatorsPage() {
                   <option value="NG">🇳🇬 Nigeria</option>
                   <option value="OTHER">🌍 Other</option>
                 </select>
+                {inviteCountry !== 'US' && (
+                  <p className="text-xs text-amber-600">International tax forms (W-8BEN) are coming soon. The creator will still receive their invitation.</p>
+                )}
               </div>
             </div>
             <Button
