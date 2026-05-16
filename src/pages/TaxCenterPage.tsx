@@ -226,7 +226,7 @@ export default function TaxCenterPage() {
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
-                        {(c.name || c.email).charAt(0).toUpperCase()}
+                        {(c.name || c.email || '?').charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{c.name}</p>

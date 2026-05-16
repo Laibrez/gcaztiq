@@ -319,7 +319,7 @@ export default function CampaignsPage() {
                     <label key={c.id} className="flex items-center gap-2.5 rounded-md px-2 py-1.5 hover:bg-muted cursor-pointer transition-colors">
                       <Checkbox checked={selectedCreators.includes(c.id)} onCheckedChange={() => toggleCreator(c.id)} />
                       <div className={cn('flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold text-white shrink-0', colors[(c.id.charCodeAt(0)) % colors.length])}>
-                        {(c.name || c.email).charAt(0).toUpperCase()}
+                        {(c.name || c.email || '?').charAt(0).toUpperCase()}
                       </div>
                       <span className="text-sm text-foreground">{c.name || 'Unnamed'}</span>
                       <span className="text-xs text-muted-foreground truncate">{c.email}</span>
@@ -343,7 +343,7 @@ export default function CampaignsPage() {
                       <div key={id} className="rounded-xl border border-border bg-card p-4 space-y-4">
                         <div className="flex items-center gap-3">
                           <div className={cn('flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white shrink-0', colors[(id.charCodeAt(0)) % colors.length])}>
-                            {(creator.name || creator.email).charAt(0).toUpperCase()}
+                            {(creator.name || creator.email || '?').charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <p className="text-sm font-semibold">{creator.name || 'Unnamed'}</p>
