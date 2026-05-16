@@ -1,11 +1,12 @@
-import { Users, Megaphone, Receipt, Wallet } from 'lucide-react';
+import { Users, Megaphone, Receipt, Wallet, AlertCircle, ArrowRight } from 'lucide-react';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
 import { usePayouts } from '@/hooks/usePayouts';
+import { useTaxSummary } from '@/hooks/useTax';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from 'recharts';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const statusStyles: Record<string, string> = {
@@ -48,8 +49,11 @@ function StatCard({ label, value, icon: Icon, loading }: { label: string; value:
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
   const { data: payoutsData, isLoading: payoutsLoading } = usePayouts();
+  const currentYear = new Date().getFullYear();
+  const { data: taxSummary } = useTaxSummary(currentYear);
   const recentPayouts: any[] = payoutsData?.payouts?.slice(0, 8) ?? [];
 
   // Build a simple monthly chart from payouts
@@ -87,6 +91,27 @@ export default function Dashboard() {
         <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground">Overview of your creator program performance.</p>
       </div>
+
+      {/* Tax Info Alert */}
+      {(taxSummary?.totalFlagged || 0) > 0 && (
+        <div 
+          onClick={() => navigate('/tax-center')}
+          className="cursor-pointer rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-center justify-between hover:bg-amber-100/70 transition-colors"
+        >
+          <div className="flex gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+            <div>
+              <h3 className="font-semibold text-amber-900">{taxSummary?.totalFlagged} creators are missing tax info for year-end 1099s</h3>
+              <p className="text-sm text-amber-800 mt-1">
+                Resolve before December 31 to avoid backup withholding. We're auto-emailing them weekly.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 text-sm font-semibold text-amber-700 shrink-0">
+            Review <ArrowRight className="h-4 w-4" />
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

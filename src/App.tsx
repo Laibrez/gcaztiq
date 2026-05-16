@@ -24,6 +24,7 @@ import TeamPage from '@/pages/TeamPage';
 import HelpPage from '@/pages/HelpPage';
 import NotFound from '@/pages/NotFound';
 import ProfilePage from '@/pages/ProfilePage';
+import TaxCenterPage from '@/pages/TaxCenterPage';
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/wallet" element={<WalletPage />} />
               <Route path="/team" element={<TeamPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/tax-center" element={<TaxCenterPage />} />
               <Route path="/help" element={<HelpPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>

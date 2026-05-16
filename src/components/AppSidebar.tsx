@@ -10,11 +10,13 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { useTaxSummary } from '@/hooks/useTax';
 
 const topNavItems = [
   { label: 'Get Started', icon: Circle, path: '/get-started' },
@@ -23,6 +25,7 @@ const topNavItems = [
   { label: 'Creators', icon: Users, path: '/creators' },
   { label: 'Payouts', icon: Receipt, path: '/payouts' },
   { label: 'Quick Pay', icon: Zap, path: '/quick-pay' },
+  { label: 'Tax Center', icon: FileText, path: '/tax-center' },
   { label: 'Wallet', icon: Wallet, path: '/wallet' },
 ];
 
@@ -34,6 +37,8 @@ const bottomNavItems = [
 
 export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
   const location = useLocation();
+  const currentYear = new Date().getFullYear();
+  const { data: taxSummary } = useTaxSummary(currentYear);
 
   const { data: profile } = useQuery({
     queryKey: ['profile'],
@@ -56,19 +61,28 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
 
   const NavItem = ({ item }: { item: (typeof topNavItems)[number] }) => {
     const active = isActive(item.path);
+    const hasAlert = item.path === '/tax-center' && (taxSummary?.totalFlagged || 0) > 0;
+
     return (
       <Link
         to={item.path}
         onClick={onInteract}
         className={cn(
-          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors justify-between',
           active
             ? 'bg-sidebar-primary text-sidebar-primary-foreground'
             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
         )}
       >
-        <item.icon className="h-4 w-4 shrink-0" />
-        <span>{item.label}</span>
+        <div className="flex items-center gap-3">
+          <item.icon className="h-4 w-4 shrink-0" />
+          <span>{item.label}</span>
+        </div>
+        {hasAlert && (
+          <span className="flex h-5 items-center justify-center rounded-full bg-amber-100 px-2 text-[10px] font-bold text-amber-700">
+            {taxSummary.totalFlagged}
+          </span>
+        )}
       </Link>
     );
   };
