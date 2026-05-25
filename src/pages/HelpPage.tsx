@@ -52,7 +52,7 @@ export default function HelpPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Email us directly at{' '}
-        <span className="font-medium text-foreground">support@rollio.com</span>
+        <span className="font-medium text-foreground">support@rolliopayments.com</span>
       </p>
     </div>
   );

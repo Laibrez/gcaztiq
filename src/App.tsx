@@ -25,7 +25,7 @@ import HelpPage from '@/pages/HelpPage';
 import NotFound from '@/pages/NotFound';
 import ProfilePage from '@/pages/ProfilePage';
 import TaxCenterPage from '@/pages/TaxCenterPage';
-
+import WorkspacePage from '@/pages/WorkspacePage';
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -46,6 +46,7 @@ const App = () => (
               <Route path="/" element={<Dashboard />} />
               <Route path="/get-started" element={<GetStartedPage />} />
               <Route path="/creators" element={<CreatorsPage />} />
+              <Route path="/workspace" element={<WorkspacePage />} />
               <Route path="/campaigns" element={<CampaignsPage />} />
               <Route path="/payouts" element={<PayoutsPage />} />
               <Route path="/quick-pay" element={<QuickPayPage />} />

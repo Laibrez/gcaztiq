@@ -171,7 +171,7 @@ export default function InvitePage() {
               </div>
 
               <p className="text-center text-xs text-[#9B9B95]">
-                International support is coming soon. Email <a href="mailto:support@rollio.com" className="underline">support@rollio.com</a> if you need help.
+                International support is coming soon. Email <a href="mailto:support@rolliopayments.com" className="underline">support@rolliopayments.com</a> if you need help.
               </p>
             </div>
           )}

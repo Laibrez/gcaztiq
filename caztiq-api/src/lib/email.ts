@@ -15,7 +15,7 @@ export async function sendPayoutEmail(data: PayoutEmailData) {
   const claimUrl = `${process.env.FRONTEND_URL}/claim/${data.claimToken}`
 
   return resend.emails.send({
-    from: 'Rollio Payments <payments@rollio.com>',
+    from: 'Rollio Payments <payments@rolliopayments.com>',
     to: data.to,
     subject: `${data.brandName} sent you ${data.amountFormatted}`,
     html: `
@@ -53,7 +53,7 @@ export async function sendPayoutClaimedEmail(data: {
   amountFormatted: string
 }) {
   return resend.emails.send({
-    from: 'Rollio Payments <payments@rollio.com>',
+    from: 'Rollio Payments <payments@rolliopayments.com>',
     to: data.to,
     subject: `Payment claimed — ${data.amountFormatted}`,
     html: `
@@ -74,7 +74,7 @@ export async function sendCreatorInviteEmail(data: {
   brandName: string
 }) {
   return resend.emails.send({
-    from: 'Rollio <notifications@rollio.com>',
+    from: 'Rollio <notifications@rolliopayments.com>',
     to: data.to,
     subject: `${data.brandName} added you as a creator on Rollio`,
     html: `
@@ -106,7 +106,7 @@ export async function sendTaxConfirmationEmail(data: {
   brandName: string
 }) {
   return resend.emails.send({
-    from: 'Rollio <notifications@rollio.com>',
+    from: 'Rollio <notifications@rolliopayments.com>',
     to: data.to,
     subject: `You're all set on Rollio`,
     html: `
@@ -145,7 +145,7 @@ export async function sendCreatorInvitationEmail(data: {
   const dateStamp = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 
   return resend.emails.send({
-    from: 'Rollio <notifications@rollio.com>',
+    from: 'Rollio <notifications@rolliopayments.com>',
     to: data.to,
     subject: `${data.brandName} wants to pay you on Rollio`,
     headers: {
@@ -192,7 +192,7 @@ export async function sendBrandCreatorConfirmedEmail(data: {
   const creatorsUrl = `${process.env.FRONTEND_URL}/creators`
 
   return resend.emails.send({
-    from: 'Rollio <notifications@rollio.com>',
+    from: 'Rollio <notifications@rolliopayments.com>',
     to: data.to,
     subject: `${data.creatorName} has confirmed on Rollio`,
     html: `
@@ -270,7 +270,7 @@ export async function sendCampaignInviteEmail(data: {
   const platformText = data.paymentConfig?.platform || 'Not specified'
   
   return resend.emails.send({
-    from: 'Rollio <notifications@rollio.com>',
+    from: 'Rollio <notifications@rolliopayments.com>',
     to: data.to,
     subject: `${data.brandName} has set up a campaign for you on Rollio`,
     html: `

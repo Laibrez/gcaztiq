@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 const members = [
   {
     name: 'Derek Martinez',
-    email: 'derek@rollio.com',
+    email: 'derek@rolliopayments.com',
     initial: 'D',
     color: 'bg-primary',
     role: 'Admin',
@@ -31,7 +31,7 @@ const members = [
   },
   {
     name: 'Alex Chen',
-    email: 'alex@rollio.com',
+    email: 'alex@rolliopayments.com',
     initial: 'A',
     color: 'bg-sky-400',
     role: 'Manager',
@@ -39,7 +39,7 @@ const members = [
   },
   {
     name: 'Sofia Reyes',
-    email: 'sofia@rollio.com',
+    email: 'sofia@rolliopayments.com',
     initial: 'S',
     color: 'bg-pink-400',
     role: 'Viewer',

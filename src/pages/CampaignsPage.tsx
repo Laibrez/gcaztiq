@@ -181,9 +181,14 @@ export default function CampaignsPage() {
           <h1 className="text-xl font-semibold text-foreground">Campaigns</h1>
           <p className="text-sm text-muted-foreground">Manage your creator campaigns.</p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2" onClick={() => setShowNew(true)}>
-          <Plus className="h-4 w-4" /> New Campaign
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="gap-2 border-primary/20 text-primary hover:bg-primary/5" onClick={() => window.location.href = '/workspace'}>
+            <Users className="h-4 w-4" /> Go to Workspace
+          </Button>
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2" onClick={() => setShowNew(true)}>
+            <Plus className="h-4 w-4" /> New Campaign
+          </Button>
+        </div>
       </div>
 
       {/* Campaign Grid */}

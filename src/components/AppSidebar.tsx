@@ -10,7 +10,8 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  FileText
+  FileText,
+  Briefcase
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
@@ -23,6 +24,7 @@ const topNavItems = [
   { label: 'Dashboard', icon: LayoutGrid, path: '/' },
   { label: 'Campaigns', icon: Megaphone, path: '/campaigns' },
   { label: 'Creators', icon: Users, path: '/creators' },
+  { label: 'Workspace', icon: Briefcase, path: '/workspace' },
   { label: 'Payouts', icon: Receipt, path: '/payouts' },
   { label: 'Quick Pay', icon: Zap, path: '/quick-pay' },
   { label: 'Tax Center', icon: FileText, path: '/tax-center' },
