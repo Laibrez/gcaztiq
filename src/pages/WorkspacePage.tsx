@@ -55,10 +55,10 @@ export default function WorkspacePage() {
 
   const TaxBadge = ({ s, form }: { s: TaxStatus; form?: string }) => {
     if (s === 'submitted')
-      return <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400"><CheckCircle2 className="h-3 w-3" /> {form} on file</span>;
+      return <span className="inline-flex whitespace-nowrap items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400"><CheckCircle2 className="h-3 w-3" /> {form} on file</span>;
     if (s === 'invited')
-      return <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-[11px] font-medium text-orange-600 dark:text-orange-400"><Clock className="h-3 w-3" /> Awaiting</span>;
-    return <span className="text-[11px] text-muted-foreground">—</span>;
+      return <span className="inline-flex whitespace-nowrap items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-[11px] font-medium text-orange-600 dark:text-orange-400"><Clock className="h-3 w-3" /> Awaiting</span>;
+    return <span className="text-[11px] whitespace-nowrap text-muted-foreground">—</span>;
   };
 
   const Toggle = ({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) => (
@@ -75,7 +75,7 @@ export default function WorkspacePage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground"><ArrowLeft className="h-3 w-3" /> Back to search</Link>
@@ -86,12 +86,80 @@ export default function WorkspacePage() {
             {q ? <> · <span className="italic">"{q}"</span></> : null}
           </p>
         </div>
-        <Link to="/" className="inline-flex">
-          <Button variant="outline" size="sm"><Search className="h-4 w-4" /> New search</Button>
+        <Link to="/" className="inline-flex w-full sm:w-auto">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto"><Search className="h-4 w-4 mr-2" /> New search</Button>
         </Link>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      {/* Mobile view */}
+      <div className="md:hidden space-y-4">
+        {rows.length === 0 && (
+          <div className="px-4 py-10 text-center text-sm text-muted-foreground rounded-xl border border-border bg-card">No creators match your filters. Try widening the search.</div>
+        )}
+        {rows.map((p) => (
+          <div key={p.id} className="rounded-xl border border-border bg-card p-4 space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="font-medium text-foreground">{p.name}</div>
+                <div className="text-sm text-muted-foreground">{p.handle}</div>
+              </div>
+              <div className="text-right text-sm">
+                <div className="tabular-nums text-foreground">{p.followers.toLocaleString()} fol.</div>
+                <div className="text-muted-foreground">{p.engagement}% eng.</div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-muted-foreground text-xs">Reached out?</span>
+                <div><Toggle value={p.reachedOut} onChange={(v) => update(p.id, { reachedOut: v })} /></div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-muted-foreground text-xs">Response?</span>
+                <div><Toggle value={p.responded} onChange={(v) => update(p.id, { responded: v })} /></div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs text-muted-foreground">Email</div>
+              <div className="flex items-center gap-1.5">
+                <div className="relative flex-1">
+                  <Mail className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={p.email}
+                    onChange={(e) => update(p.id, { email: e.target.value })}
+                    placeholder="email@…"
+                    className="h-8 pl-7 text-xs w-full"
+                  />
+                </div>
+                {p.taxStatus !== 'submitted' && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 px-2 text-xs shrink-0"
+                    disabled={!p.email || p.taxStatus === 'invited'}
+                    onClick={() => handleInvite(p)}
+                  >
+                    <Send className="h-3 w-3 mr-1" />
+                    {p.taxStatus === 'invited' ? 'Sent' : 'Invite'}
+                  </Button>
+                )}
+                {p.taxStatus === 'submitted' && (
+                  <CheckCircle2 className="h-4 w-4 text-blue-500 shrink-0" />
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between pt-3 border-t border-border">
+              <span className="text-xs text-muted-foreground">Tax Status</span>
+              <TaxBadge s={p.taxStatus} form={p.taxForm} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop view */}
+      <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40">
