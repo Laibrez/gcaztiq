@@ -305,7 +305,7 @@ export default function QuickPayPage() {
         <DialogContent className="w-[calc(100vw-2rem)] max-w-md">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/20">
-              <DollarSign className="h-7 w-7" style={{ color: '#ea8324' }} />
+              <DollarSign className="h-7 w-7 text-primary" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-foreground">Confirm Payout</h2>

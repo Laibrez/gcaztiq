@@ -6,54 +6,54 @@
 
 @layer base {
   :root {
-    --background: 60 5% 98%;
-    --foreground: 222 47% 11%;
+    --background: 30 33% 94%;
+    --foreground: 240 28% 14%;
 
-    --card: 60 5% 97%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 28% 14%;
 
-    --primary: 29 100% 61%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 8 79% 57%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 5% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 233 66% 50%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 60 5% 96%;
-    --muted-foreground: 218 11% 46%;
+    --muted: 30 20% 90%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 29 100% 61%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 8 79% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 29 100% 61%;
+    --border: 30 20% 86%;
+    --input: 30 20% 86%;
+    --ring: 8 79% 57%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 218 11% 46%;
-    --sidebar-primary: 29 100% 61%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 60 5% 97%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 29 100% 61%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 8 79% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 20% 96%;
+    --sidebar-accent-foreground: 240 28% 14%;
+    --sidebar-border: 30 20% 86%;
+    --sidebar-ring: 8 79% 57%;
 
     /* Custom tokens */
-    --surface: 60 5% 96%;
-    --status-pending: 45 93% 47%;
-    --status-creating: 45 93% 47%;
-    --status-processing: 217 91% 60%;
-    --status-sent: 29 100% 61%;
-    --status-paid: 29 100% 61%;
-    --status-claimed: 29 100% 61%;
-    --status-active: 29 100% 61%;
+    --surface: 30 20% 90%;
+    --status-pending: 38 92% 50%;
+    --status-creating: 38 92% 50%;
+    --status-processing: 233 66% 50%;
+    --status-sent: 160 84% 39%;
+    --status-paid: 160 84% 39%;
+    --status-claimed: 160 84% 39%;
+    --status-active: 8 79% 57%;
     --status-cancelled: 0 84% 60%;
 
     font-family: 'Inter', system-ui, -apple-system, sans-serif;

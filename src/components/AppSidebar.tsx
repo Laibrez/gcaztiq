@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { RollioLogo } from '@/components/RollioLogo';
 
 const topNavItems = [
   { label: 'Get Started', icon: Circle, path: '/get-started' },
@@ -77,10 +78,8 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
     <>
       <div className="flex h-14 items-center px-5 shrink-0">
         <Link to="/" onClick={onInteract} className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-            <span className="text-xs font-bold text-primary-foreground">G</span>
-          </div>
-          <span className="text-base font-semibold text-foreground">Rollio</span>
+          <RollioLogo className="h-7 w-7" />
+          <span className="text-base font-semibold text-foreground">Rollio Payments</span>
         </Link>
       </div>
 

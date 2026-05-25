@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '@/lib/api';
+import { RollioLogo } from '@/components/RollioLogo';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -29,10 +30,8 @@ export default function LoginPage() {
             <div className="w-full max-w-sm space-y-6">
                 {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                        <span className="text-sm font-bold text-primary-foreground">G</span>
-                    </div>
-                    <span className="text-xl font-semibold text-foreground">Rollio</span>
+                    <RollioLogo className="h-9 w-9" />
+                    <span className="text-xl font-semibold text-foreground">Rollio Payments</span>
                 </div>
 
                 <div className="space-y-1">

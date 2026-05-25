@@ -14,7 +14,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 const typeBadge: Record<string, string> = {
-  topup: 'bg-[#ff9736]/15 text-[#b85a0d]',
+  topup: 'bg-primary/10 text-primary',
   payout: 'bg-orange-100 text-orange-700',
   refund: 'bg-yellow-100 text-yellow-700',
 };
@@ -212,7 +212,7 @@ export default function WalletPage() {
                         </span>
                       </td>
                       <td className="px-5 py-3 text-sm text-foreground">{tx.description}</td>
-                      <td className={cn('whitespace-nowrap px-5 py-3 text-right text-sm font-medium', positive ? 'text-[#ea8324]' : 'text-destructive')}>
+                      <td className={cn('whitespace-nowrap px-5 py-3 text-right text-sm font-medium', positive ? 'text-status-paid' : 'text-destructive')}>
                         {positive ? '+' : '-'}${Math.abs(tx.amount_cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>
                       <td className="whitespace-nowrap px-5 py-3 text-right text-sm text-foreground">

@@ -12,14 +12,14 @@ import { usePayouts, useCancelPayout } from '@/hooks/usePayouts';
 const statusStyles: Record<string, string> = {
   pending:   'bg-status-pending/15 text-status-pending',
   sent:      'bg-status-sent/15 text-status-sent',
-  claimed:   'bg-[#ff9736]/15 text-[#b85a0d]',
+  claimed:   'bg-status-claimed/15 text-status-claimed',
   cancelled: 'bg-destructive/15 text-destructive',
   processing:'bg-status-processing/15 text-status-processing',
 };
 
 const AVATAR_COLORS = [
   'bg-pink-400','bg-violet-400','bg-sky-400','bg-amber-400',
-  'bg-[#ff9736]','bg-rose-400','bg-indigo-400','bg-slate-400',
+  'bg-[#E8503A]','bg-rose-400','bg-indigo-400','bg-slate-400',
 ];
 function avatarColor(id: string) {
   let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
