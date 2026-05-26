@@ -83,7 +83,7 @@ router.delete('/:id', async (req, res) => {
   const user = (req as any).user
   const creatorId = req.params.id
   console.log(`Force deleting creator ${creatorId} for brand ${user.id}`);
-  
+
   // 1. Get all payouts for this creator
   const { data: payouts } = await supabase
     .from('payouts')
@@ -93,7 +93,7 @@ router.delete('/:id', async (req, res) => {
 
   if (payouts && payouts.length > 0) {
     const payoutIds = payouts.map(p => p.id)
-    
+
     // 2. Unlink transactions (set reference_id to null)
     await supabase.from('wallet_transactions')
       .update({ reference_id: null })

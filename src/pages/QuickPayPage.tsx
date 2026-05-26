@@ -115,18 +115,19 @@ export default function QuickPayPage() {
       </div>
 
       {/* Tab switcher */}
-      <div className="inline-flex rounded-lg border border-border bg-muted p-1">
+      <div className="flex w-full sm:inline-flex rounded-lg border border-border bg-muted p-1">
         {(['single', 'bulk'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={cn(
-              'inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors capitalize',
+              'flex-1 sm:flex-none inline-flex justify-center items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors capitalize',
               activeTab === tab ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {tab === 'single' ? <DollarSign className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
-            {tab === 'single' ? 'Single Payout' : 'CSV Bulk Payouts'}
+            <span className="hidden sm:inline">{tab === 'single' ? 'Single Payout' : 'CSV Bulk Payouts'}</span>
+            <span className="sm:hidden">{tab === 'single' ? 'Single' : 'Bulk CSV'}</span>
           </button>
         ))}
       </div>
@@ -134,7 +135,7 @@ export default function QuickPayPage() {
       {activeTab === 'single' && (
         <div className="space-y-5 rounded-xl border border-border bg-card p-6">
           {/* Balance indicator */}
-          <div className="flex items-center justify-between rounded-lg bg-muted px-4 py-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg bg-muted px-4 py-3">
             <span className="text-sm text-muted-foreground">Wallet balance</span>
             {walletLoading ? (
               <div className="flex items-center gap-2">
@@ -159,7 +160,7 @@ export default function QuickPayPage() {
             <Input id="email" placeholder="creator@example.com" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="amount" className="text-sm font-medium">Amount <span className="text-destructive">*</span></Label>
               <Input id="amount" type="number" min="1" step="0.01" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} />
@@ -239,7 +240,7 @@ export default function QuickPayPage() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-lg bg-muted p-4 space-y-1">
               <p className="text-sm text-muted-foreground">Valid Payouts</p>
               <p className="text-2xl font-semibold text-foreground">{bulkResult.summary.valid_count}</p>
@@ -267,7 +268,7 @@ export default function QuickPayPage() {
             </div>
           </div>
 
-           <div className="flex items-center justify-between rounded-lg bg-muted px-4 py-3">
+           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg bg-muted px-4 py-3">
               <span className="text-sm text-muted-foreground">Wallet balance</span>
               <span className={cn("text-sm font-semibold", bulkResult.summary.sufficient_balance ? "text-foreground" : "text-destructive")}>
                 ${(bulkResult.summary.wallet_balance_cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}

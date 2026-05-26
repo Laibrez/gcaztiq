@@ -232,7 +232,7 @@ router.post('/bulk/confirm', async (req, res) => {
   if (validRows.length === 0) return res.status(400).json({ error: 'No valid rows to process' })
 
   const totalCents = validRows.reduce((sum: number, r: any) => sum + r.amount_cents, 0)
-  
+
   // 1. Deduct total from wallet atomically
   const { data: newBalance, error: walletError } = await supabase
     .rpc('deduct_from_wallet', { p_brand_id: user.id, p_amount_cents: totalCents })
@@ -247,7 +247,7 @@ router.post('/bulk/confirm', async (req, res) => {
   // 3. Prepare payout records
   const payoutInserts = await Promise.all(validRows.map(async (row: any) => {
     let { data: creator } = await supabase.from('creators').select('id').eq('brand_id', user.id).eq('email', row.email).maybeSingle()
-    
+
     if (!creator) {
       const { data: newCreator } = await supabase.from('creators').insert({ brand_id: user.id, email: row.email }).select().single()
       creator = newCreator

@@ -5,11 +5,10 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
+dotenv.config(); // Load local .env first (caztiq-api/.env)
 const rootEnvPath = path.resolve(__dirname, '../../.env');
 if (fs.existsSync(rootEnvPath)) {
     dotenv.config({ path: rootEnvPath });
-} else {
-    dotenv.config(); // Fallback to current directory or environment variables (Production)
 }
 
 const app = express();
@@ -29,6 +28,7 @@ import campaignsRouter from './routes/campaigns';
 import payoutsRouter from './routes/payouts';
 import claimRouter from './routes/claim';
 import inviteRouter from './routes/invite';
+import taxRouter from './routes/tax';
 
 app.use('/api/auth', authRouter);
 app.use('/api/wallet', walletRouter);
@@ -37,6 +37,7 @@ app.use('/api/campaigns', campaignsRouter);
 app.use('/api/payouts', payoutsRouter);
 app.use('/api/claim', claimRouter);   // public — no auth
 app.use('/api/invite', inviteRouter); // public — no auth
+app.use('/api/tax', taxRouter);
 
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
