@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, MoreHorizontal, X, Copy, Receipt } from 'lucide-react';
+import { Search, MoreHorizontal, X, Copy, Receipt, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +56,28 @@ export default function PayoutsPage() {
     toast.success('Payout ID copied');
   };
 
+  const handleExportCsv = async () => {
+    try {
+      const token = localStorage.getItem('gc_token');
+      const BASE = import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app';
+      const res = await fetch(`${BASE}/api/payouts/export-csv`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Rollio_Payouts_All.csv`;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success('CSV downloaded');
+    } catch {
+      toast.error('Failed to export CSV');
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -64,9 +86,14 @@ export default function PayoutsPage() {
           <h1 className="text-xl font-semibold text-foreground">Payouts</h1>
           <p className="text-sm text-muted-foreground">Historical record of all payouts.</p>
         </div>
-        <div className="relative w-56">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search creators…" className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={handleExportCsv}>
+            <Download className="h-4 w-4" /> Download CSV
+          </Button>
+          <div className="relative w-56">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Search creators…" className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
         </div>
       </div>
 

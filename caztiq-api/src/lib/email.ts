@@ -315,3 +315,81 @@ export async function sendCampaignInviteEmail(data: {
     `
   })
 }
+
+// ─── Workspace Invite Emails ───────────────────────────────────────────────────
+
+// Sent to prospect when brand invites them to the workspace
+export async function sendWorkspaceInviteEmail(data: {
+  to: string
+  creatorName: string
+  brandName: string
+  inviteToken: string
+}) {
+  const acceptUrl = `${process.env.FRONTEND_URL}/workspace-accept/${data.inviteToken}`
+  const firstName = data.creatorName.split(' ')[0]
+
+  return resend.emails.send({
+    from: 'Rollio <notifications@rolliopayments.com>',
+    to: data.to,
+    subject: `${data.brandName} wants to collaborate with you`,
+    headers: { 'X-Entity-Ref-ID': data.inviteToken },
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background: #F9F8F4; margin: 0; padding: 40px 20px;">
+  <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
+    <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
+    <p style="color: #6B6B65; margin: 0 0 8px;">Hi ${firstName},</p>
+    <p style="color: #6B6B65; margin: 0 0 24px;">
+      <strong style="color: #1A1A18;">${data.brandName}</strong> wants to work with you and has added you to their creator workspace on Rollio.
+    </p>
+    <p style="color: #6B6B65; margin: 0 0 24px;">
+      Click below to accept their invitation and confirm you're interested in collaborating.
+    </p>
+    <a href="${acceptUrl}" style="display: block; background: #B6F542; color: #1A1A18; padding: 16px; border-radius: 10px; text-decoration: none; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 24px;">
+      ACCEPT INVITATION →
+    </a>
+    <p style="color: #9B9B95; font-size: 12px; margin: 0 0 16px; word-break: break-all;">
+      Or copy: <a href="${acceptUrl}" style="color: #6B6B65;">${acceptUrl}</a>
+    </p>
+    <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">— Rollio</p>
+  </div>
+</body>
+</html>
+    `
+  })
+}
+
+// Sent to brand when a creator accepts their workspace invitation
+export async function sendWorkspaceAcceptedEmail(data: {
+  to: string
+  brandName: string
+  creatorName: string
+  creatorEmail: string
+}) {
+  const workspaceUrl = `${process.env.FRONTEND_URL}/workspace`
+
+  return resend.emails.send({
+    from: 'Rollio <notifications@rolliopayments.com>',
+    to: data.to,
+    subject: `${data.creatorName} accepted your workspace invitation`,
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background: #F9F8F4; margin: 0; padding: 40px 20px;">
+  <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; border: 1px solid #E8E6DF;">
+    <div style="width: 40px; height: 40px; background: #B6F542; border-radius: 8px; margin-bottom: 24px;"></div>
+    <p style="color: #6B6B65; margin: 0 0 24px;">
+      <strong style="color: #1A1A18;">${data.creatorName}</strong> (${data.creatorEmail}) has accepted your collaboration invitation.
+    </p>
+    <p style="color: #6B6B65; margin: 0 0 24px;">They now appear as accepted in your workspace.</p>
+    <a href="${workspaceUrl}" style="display: block; background: #B6F542; color: #1A1A18; padding: 16px; border-radius: 10px; text-decoration: none; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 24px;">
+      GO TO WORKSPACE →
+    </a>
+    <p style="color: #9B9B95; font-size: 13px; margin-top: 32px; border-top: 1px solid #E8E6DF; padding-top: 20px;">— Rollio</p>
+  </div>
+</body>
+</html>
+    `
+  })
+}

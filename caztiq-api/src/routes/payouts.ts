@@ -297,5 +297,48 @@ router.post('/bulk/confirm', async (req, res) => {
   res.json({ success: true, created: payouts?.length || 0 })
 })
 
+// GET /api/payouts/export-csv — download all payouts as CSV for accountant
+router.get('/export-csv', async (req, res) => {
+  const user = (req as any).user
+  const year = req.query.year ? parseInt(req.query.year as string) : null
+
+  let query = supabase
+    .from('payouts')
+    .select('*, creators(name, email), campaigns(name)')
+    .eq('brand_id', user.id)
+    .order('created_at', { ascending: false })
+
+  const { data: payouts, error } = await query
+  if (error) return res.status(500).json({ error: error.message })
+
+  const rows = (payouts || []).filter(p => {
+    if (!year) return true
+    return new Date(p.created_at).getFullYear() === year
+  })
+
+  const headers = ['Date', 'Creator Name', 'Creator Email', 'Campaign', 'Amount (USD)', 'Creator Receives', 'Fee', 'Currency', 'Status']
+  const escape = (val: any) => `"${String(val ?? '').replace(/"/g, '""')}"`
+
+  const csvLines = [
+    headers.join(','),
+    ...rows.map(p => [
+      escape(new Date(p.created_at).toISOString().split('T')[0]),
+      escape((p as any).creators?.name || ''),
+      escape((p as any).creators?.email || ''),
+      escape((p as any).campaigns?.name || 'Direct'),
+      escape((p.amount_cents / 100).toFixed(2)),
+      escape((p.creator_receives_cents / 100).toFixed(2)),
+      escape((p.fee_cents / 100).toFixed(2)),
+      escape(p.currency || 'USD'),
+      escape(p.status),
+    ].join(','))
+  ]
+
+  const filename = year ? `Rollio_Payouts_${year}.csv` : `Rollio_Payouts_All.csv`
+  res.setHeader('Content-Type', 'text/csv')
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
+  res.send(csvLines.join('\n'))
+})
+
 export default router
 
