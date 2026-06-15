@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { RollioAnimatedLogo } from '@/components/RollioLogo';
 import {
   Circle,
   LayoutGrid,
@@ -15,7 +16,6 @@ import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { RollioLogo } from '@/components/RollioLogo';
 
 const topNavItems = [
   { label: 'Get Started', icon: Circle, path: '/get-started' },
@@ -65,7 +65,7 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
           active
             ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            : 'text-white/70 hover:bg-white/10 hover:text-white'
         )}
       >
         <item.icon className="h-4 w-4 shrink-0" />
@@ -76,10 +76,10 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
 
   return (
     <>
-      <div className="flex h-14 items-center px-5 shrink-0">
+      <div className="flex h-14 items-center px-4 shrink-0">
         <Link to="/" onClick={onInteract} className="flex items-center gap-2">
-          <RollioLogo className="h-7 w-7" />
-          <span className="text-base font-semibold text-foreground">Rollio Payments</span>
+          <RollioAnimatedLogo size={34} />
+          <span className="text-base font-semibold tracking-tight text-white">Rollio</span>
         </Link>
       </div>
 
@@ -88,9 +88,9 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
           <NavItem key={item.path} item={item} />
         ))}
 
-        <div className="my-3 border-t border-border" />
+        <div className="my-3 border-t border-white/10" />
 
-        <div className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground">
+        <div className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-white/60">
           <span>Demo Mode</span>
           <Switch defaultChecked className="scale-75" />
         </div>
@@ -100,24 +100,24 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
         ))}
       </nav>
 
-      <div className="border-t border-border p-3 shrink-0">
+      <div className="border-t border-white/10 p-3 shrink-0">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           <Link to="/profile" onClick={onInteract} className="flex items-center gap-3 min-w-0 flex-1 group">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground uppercase group-hover:opacity-80 transition-opacity">
               {profile?.name ? profile.name.charAt(0) : 'B'}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+              <p className="truncate text-sm font-medium text-white group-hover:text-white/80 transition-colors">
                 {profile?.name || 'Brand Account'}
               </p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-xs text-white/50">
                 {profile?.email || '...'}
               </p>
             </div>
           </Link>
-          <button 
+          <button
             onClick={handleLogout}
-            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+            className="shrink-0 text-white/50 transition-colors hover:text-white"
             title="Log out"
           >
             <LogOut className="h-4 w-4" />
@@ -130,7 +130,7 @@ export function SidebarContent({ onInteract }: { onInteract?: () => void }) {
 
 export function AppSidebar() {
   return (
-    <aside className="hidden md:flex w-[240px] flex-col border-r border-border bg-sidebar shrink-0">
+    <aside className="hidden md:flex w-[240px] flex-col border-r border-white/10 bg-sidebar shrink-0">
       <SidebarContent />
     </aside>
   );

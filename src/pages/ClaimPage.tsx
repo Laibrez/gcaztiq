@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, XCircle, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { RollioAnimatedLogo } from '@/components/RollioLogo';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { RollioLogo } from '@/components/RollioLogo';
 
 const API = import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app';
 
@@ -26,7 +26,6 @@ type PayoutInfo = {
   requires_tax_form: boolean;
 };
 
-// Steps: loading → error → amount → us-confirm → tax → payment → success
 type Step = 'loading' | 'error' | 'amount' | 'us-confirm' | 'tax' | 'payment' | 'success';
 type ErrorType = 'already_claimed' | 'cancelled' | 'expired' | 'invalid';
 
@@ -43,7 +42,6 @@ export default function ClaimPage() {
   const [errorType, setErrorType] = useState<ErrorType>('invalid');
   const [payout, setPayout]       = useState<PayoutInfo | null>(null);
 
-  // W-9 form fields
   const [legalName,  setLegalName]  = useState('');
   const [street,     setStreet]     = useState('');
   const [city,       setCity]       = useState('');
@@ -53,7 +51,6 @@ export default function ClaimPage() {
   const [certified,  setCertified]  = useState(false);
   const [taxLoading, setTaxLoading] = useState(false);
 
-  // Payment method
   const [selectedMethod, setSelectedMethod] = useState('');
   const [paymentValue,   setPaymentValue]   = useState('');
   const [submitting,     setSubmitting]     = useState(false);
@@ -118,29 +115,27 @@ export default function ClaimPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-5">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="mb-8 flex justify-center">
-          <div className="flex items-center gap-2">
-            <RollioLogo className="h-10 w-10" />
-            <span className="text-lg font-semibold text-foreground">Rollio Payments</span>
-          </div>
+        <div className="mb-8 flex items-center justify-center gap-2.5 animate-fade-up">
+          <RollioAnimatedLogo size={44} float />
+          <span className="text-xl font-semibold tracking-tight text-foreground">Rollio</span>
         </div>
 
-        <div className="rounded-2xl border border-[#E8E6DF] bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
 
           {/* Loading */}
           {step === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-8">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm text-[#6B6B65]">Loading payment…</p>
+              <p className="text-sm text-muted-foreground">Loading payment…</p>
             </div>
           )}
 
           {/* Error */}
           {step === 'error' && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
-              <XCircle className="h-12 w-12 text-red-400" />
-              <h2 className="text-xl font-bold text-[#1A1A18]">{errorMessages[errorType].title}</h2>
-              <p className="text-sm text-[#6B6B65]">{errorMessages[errorType].msg}</p>
+              <XCircle className="h-12 w-12 text-destructive" />
+              <h2 className="text-xl font-bold text-foreground">{errorMessages[errorType].title}</h2>
+              <p className="text-sm text-muted-foreground">{errorMessages[errorType].msg}</p>
             </div>
           )}
 
@@ -148,15 +143,15 @@ export default function ClaimPage() {
           {step === 'amount' && payout && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-[#6B6B65]">Payment from</p>
-                <h2 className="text-xl font-bold text-[#1A1A18]">{payout.brand_name}</h2>
+                <p className="text-sm text-muted-foreground">Payment from</p>
+                <h2 className="text-xl font-bold text-foreground">{payout.brand_name}</h2>
               </div>
-              <div className="rounded-xl bg-[#F9F8F4] py-6 text-center">
-                <p className="text-4xl font-black text-[#1A1A18]">{amountDisplay}</p>
-                <p className="mt-1 text-sm text-[#6B6B65]">{payout.currency}</p>
+              <div className="rounded-xl bg-muted/50 py-6 text-center">
+                <p className="text-4xl font-black text-foreground">{amountDisplay}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{payout.currency}</p>
               </div>
               {payout.note && (
-                <p className="text-sm text-[#6B6B65]"><span className="font-medium text-[#1A1A18]">Note:</span> {payout.note}</p>
+                <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Note:</span> {payout.note}</p>
               )}
               <Button
                 className="w-full bg-primary text-primary-foreground font-bold hover:bg-primary/90"
@@ -164,7 +159,7 @@ export default function ClaimPage() {
               >
                 Continue to claim →
               </Button>
-              <p className="text-center text-xs text-[#9B9B95]">No account required. Choose your preferred payment method.</p>
+              <p className="text-center text-xs text-muted-foreground/70">No account required. Choose your preferred payment method.</p>
             </div>
           )}
 
@@ -172,12 +167,12 @@ export default function ClaimPage() {
           {step === 'us-confirm' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-[#1A1A18]">Before we continue</h2>
-                <p className="mt-1 text-sm text-[#6B6B65]">
+                <h2 className="text-xl font-bold text-foreground">Before we continue</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
                   We need to collect your tax information to comply with IRS requirements.
                 </p>
               </div>
-              <div className="rounded-xl border border-[#E8E6DF] bg-[#F9F8F4] p-5 text-sm text-[#6B6B65] leading-relaxed">
+              <div className="rounded-xl border border-border bg-muted/30 p-5 text-sm text-muted-foreground leading-relaxed">
                 Payments to US-based creators may be reported to the IRS. We collect your W-9 information to stay compliant — the same fields you'd fill out on a paper form.
               </div>
               <Button
@@ -186,7 +181,7 @@ export default function ClaimPage() {
               >
                 Yes, I'm US-based →
               </Button>
-              <p className="text-center text-xs text-[#9B9B95]">
+              <p className="text-center text-xs text-muted-foreground/70">
                 For MVP, only US-based creators are supported at this time.
               </p>
             </div>
@@ -196,48 +191,32 @@ export default function ClaimPage() {
           {step === 'tax' && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-xl font-bold text-[#1A1A18]">Tax Information (W-9)</h2>
-                <div className="mt-2 flex items-center gap-1.5 text-xs text-[#6B6B65]">
+                <h2 className="text-xl font-bold text-foreground">Tax Information (W-9)</h2>
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="h-3.5 w-3.5 text-primary" />
                   We need this to comply with IRS requirements. Your information is encrypted and secure.
                 </div>
               </div>
 
               <div className="space-y-4">
-                {/* Full Legal Name */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">Full Legal Name</Label>
-                  <Input
-                    value={legalName}
-                    onChange={e => setLegalName(e.target.value)}
-                    placeholder="As it appears on tax documents"
-                  />
+                  <Label className="text-sm font-medium text-foreground">Full Legal Name</Label>
+                  <Input value={legalName} onChange={e => setLegalName(e.target.value)} placeholder="As it appears on tax documents" />
                 </div>
 
-                {/* Street Address */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">Street Address</Label>
-                  <Input
-                    value={street}
-                    onChange={e => setStreet(e.target.value)}
-                    placeholder="123 Main St"
-                  />
+                  <Label className="text-sm font-medium text-foreground">Street Address</Label>
+                  <Input value={street} onChange={e => setStreet(e.target.value)} placeholder="123 Main St" />
                 </div>
 
-                {/* City */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">City</Label>
-                  <Input
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
-                    placeholder="City"
-                  />
+                  <Label className="text-sm font-medium text-foreground">City</Label>
+                  <Input value={city} onChange={e => setCity(e.target.value)} placeholder="City" />
                 </div>
 
-                {/* State + ZIP */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-medium text-[#1A1A18]">State</Label>
+                    <Label className="text-sm font-medium text-foreground">State</Label>
                     <select
                       value={state}
                       onChange={e => setState(e.target.value)}
@@ -250,7 +229,7 @@ export default function ClaimPage() {
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-medium text-[#1A1A18]">ZIP Code</Label>
+                    <Label className="text-sm font-medium text-foreground">ZIP Code</Label>
                     <Input
                       value={zip}
                       onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
@@ -260,9 +239,8 @@ export default function ClaimPage() {
                   </div>
                 </div>
 
-                {/* SSN / EIN */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">SSN or EIN</Label>
+                  <Label className="text-sm font-medium text-foreground">SSN or EIN</Label>
                   <Input
                     type="password"
                     value={taxId}
@@ -270,18 +248,17 @@ export default function ClaimPage() {
                     placeholder="•••-••-____"
                     autoComplete="off"
                   />
-                  <p className="text-xs text-[#9B9B95]">Optional but required for payments over $600/year.</p>
+                  <p className="text-xs text-muted-foreground/70">Optional but required for payments over $600/year.</p>
                 </div>
 
-                {/* Certification checkbox */}
                 <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4 hover:border-primary/60 transition-colors">
                   <input
                     type="checkbox"
                     checked={certified}
                     onChange={e => setCertified(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 accent-[#E8503A] shrink-0"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
                   />
-                  <span className="text-sm text-[#6B6B65] leading-relaxed">
+                  <span className="text-sm text-muted-foreground leading-relaxed">
                     I certify under penalty of perjury that the information I have provided is correct and complete.
                   </span>
                 </label>
@@ -301,7 +278,7 @@ export default function ClaimPage() {
           {step === 'payment' && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-xl font-bold text-[#1A1A18]">How do you want to receive {amountDisplay}?</h2>
+                <h2 className="text-xl font-bold text-foreground">How do you want to receive {amountDisplay}?</h2>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {PAYMENT_METHODS.map((m) => (
@@ -313,7 +290,7 @@ export default function ClaimPage() {
                       selectedMethod === m.id ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
                     )}
                   >
-                    <p className="text-sm font-semibold text-[#1A1A18]">{m.label}</p>
+                    <p className="text-sm font-semibold text-foreground">{m.label}</p>
                   </button>
                 ))}
               </div>
@@ -341,12 +318,12 @@ export default function ClaimPage() {
           {step === 'success' && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
               <CheckCircle2 className="h-16 w-16 text-status-paid" />
-              <h2 className="text-xl font-bold text-[#1A1A18]">You're all set! ✓</h2>
-              <p className="text-sm text-[#6B6B65]">
+              <h2 className="text-xl font-bold text-foreground">You're all set! ✓</h2>
+              <p className="text-sm text-muted-foreground">
                 Your tax information has been received. You'll get an email notification
                 each time {payout?.brand_name || 'the brand'} sends you a payment.
               </p>
-              <p className="text-xs text-[#9B9B95] mt-2">You can close this page.</p>
+              <p className="text-xs text-muted-foreground/70 mt-2">You can close this page.</p>
             </div>
           )}
         </div>

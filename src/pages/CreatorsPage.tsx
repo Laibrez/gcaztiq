@@ -22,7 +22,7 @@ function getInitial(name: string) {
 
 const AVATAR_COLORS = [
   'bg-pink-400',   'bg-violet-400', 'bg-sky-400',    'bg-amber-400',
-  'bg-[#E8503A]','bg-rose-400',   'bg-indigo-400', 'bg-slate-400',
+  'bg-[#D4854A]','bg-rose-400',   'bg-indigo-400', 'bg-slate-400',
   'bg-orange-400', 'bg-cyan-400',   'bg-purple-400', 'bg-fuchsia-400',
 ];
 

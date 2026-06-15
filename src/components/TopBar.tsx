@@ -11,26 +11,26 @@ export function TopBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="flex h-14 items-center justify-between md:justify-end border-b border-border bg-sidebar px-4 md:px-6 shrink-0">
+    <header className="flex h-14 items-center justify-between md:justify-end border-b border-white/10 bg-sidebar px-4 md:px-6 shrink-0">
       <div className="md:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <button className="flex items-center justify-center rounded-md p-2 -ml-2 text-muted-foreground hover:bg-muted transition-colors">
+            <button className="flex items-center justify-center rounded-md p-2 -ml-2 text-white/70 hover:bg-white/10 hover:text-white transition-colors">
               <Menu className="h-5 w-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[280px] p-0 flex flex-col pt-4 bg-sidebar">
+          <SheetContent side="left" className="w-[280px] p-0 flex flex-col pt-4 bg-sidebar border-r border-white/10">
             <SidebarContent onInteract={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
       </div>
 
-      <Link to="/wallet" className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 transition-colors hover:bg-muted shrink-0">
-        <Wallet className="h-4 w-4 text-muted-foreground" />
+      <Link to="/wallet" className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 transition-colors hover:bg-white/20 shrink-0">
+        <Wallet className="h-4 w-4 text-white/70" />
         {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          <Loader2 className="h-4 w-4 animate-spin text-white/70" />
         ) : (
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-sm font-semibold text-white">
             ${(balanceCents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         )}

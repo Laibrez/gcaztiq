@@ -14,9 +14,9 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 const typeBadge: Record<string, string> = {
-  topup: 'bg-primary/10 text-primary',
-  payout: 'bg-orange-100 text-orange-700',
-  refund: 'bg-yellow-100 text-yellow-700',
+  topup: 'bg-status-paid/10 text-status-paid',
+  payout: 'bg-primary/10 text-primary',
+  refund: 'bg-status-pending/10 text-status-pending',
 };
 
 // ── Stripe checkout inner form ──────────────────────────────────────────────

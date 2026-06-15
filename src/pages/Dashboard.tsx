@@ -17,12 +17,12 @@ const statusStyles: Record<string, string> = {
 };
 
 const PIE_COLORS = [
-  '#E8503A', '#2B3FD4', 'hsl(280,60%,65%)', 'hsl(38,92%,50%)',
+  '#D4854A', '#2D3A5C', 'hsl(280,60%,65%)', 'hsl(38,92%,50%)',
 ];
 
 const AVATAR_COLORS = [
   'bg-pink-400','bg-violet-400','bg-sky-400','bg-amber-400',
-  'bg-[#E8503A]','bg-rose-400','bg-indigo-400','bg-slate-400',
+  'bg-[#D4854A]','bg-rose-400','bg-indigo-400','bg-slate-400',
 ];
 function avatarColor(id: string) {
   let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
@@ -110,15 +110,15 @@ export default function Dashboard() {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="areaBrand" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#E8503A" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#E8503A" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#D4854A" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="#D4854A" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(220,13%,91%)" />
                   <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'hsl(218,11%,46%)' }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: 'hsl(218,11%,46%)' }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
                   <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Amount']} contentStyle={{ backgroundColor: '#fff', border: '1px solid hsl(220,13%,91%)', borderRadius: '8px', fontSize: '13px' }} />
-                  <Area type="monotone" dataKey="amount" stroke="#E8503A" strokeWidth={2} fill="url(#areaBrand)" />
+                  <Area type="monotone" dataKey="amount" stroke="#D4854A" strokeWidth={2} fill="url(#areaBrand)" />
                 </AreaChart>
               </ResponsiveContainer>
             )}

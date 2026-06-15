@@ -19,7 +19,7 @@ const statusStyles: Record<string, string> = {
 
 const AVATAR_COLORS = [
   'bg-pink-400','bg-violet-400','bg-sky-400','bg-amber-400',
-  'bg-[#E8503A]','bg-rose-400','bg-indigo-400','bg-slate-400',
+  'bg-[#D4854A]','bg-rose-400','bg-indigo-400','bg-slate-400',
 ];
 function avatarColor(id: string) {
   let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) & 0xffff;

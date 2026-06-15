@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '@/lib/api';
-import { RollioLogo } from '@/components/RollioLogo';
+import { RollioAnimatedLogo } from '@/components/RollioLogo';
 
 export default function SignupPage() {
     const navigate = useNavigate();
@@ -21,7 +21,6 @@ export default function SignupPage() {
                 localStorage.setItem('gc_token', data.session.access_token);
                 navigate('/');
             } else {
-                // Supabase email confirmation required
                 navigate('/login');
             }
         } catch (err: any) {
@@ -34,19 +33,20 @@ export default function SignupPage() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-background px-4">
             <div className="w-full max-w-sm space-y-6">
+
                 {/* Logo */}
-                <div className="flex items-center gap-2">
-                    <RollioLogo className="h-9 w-9" />
-                    <span className="text-xl font-semibold text-foreground">Rollio Payments</span>
+                <div className="flex items-center gap-2.5 animate-fade-up">
+                    <RollioAnimatedLogo size={42} float />
+                    <span className="text-xl font-semibold tracking-tight text-foreground">Rollio</span>
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1 animate-fade-up delay-150">
                     <h1 className="text-2xl font-bold text-foreground">Create your account</h1>
                     <p className="text-sm text-muted-foreground">Start paying creators the right way</p>
                 </div>
 
                 <form onSubmit={handleSignup} className="space-y-4">
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 animate-fade-up delay-200">
                         <label className="text-sm font-medium text-foreground">Company name</label>
                         <input
                             type="text"
@@ -57,7 +57,7 @@ export default function SignupPage() {
                         />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 animate-fade-up delay-250">
                         <label className="text-sm font-medium text-foreground">Email</label>
                         <input
                             type="email"
@@ -69,7 +69,7 @@ export default function SignupPage() {
                         />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 animate-fade-up delay-300">
                         <label className="text-sm font-medium text-foreground">Password</label>
                         <input
                             type="password"
@@ -82,18 +82,18 @@ export default function SignupPage() {
                         />
                     </div>
 
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {error && <p className="text-sm text-destructive animate-fade-in">{error}</p>}
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                        className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 animate-fade-up delay-350"
                     >
                         {loading ? 'Creating account…' : 'Create account'}
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-muted-foreground">
+                <p className="text-center text-sm text-muted-foreground animate-fade-up delay-400">
                     Already have an account?{' '}
                     <Link to="/login" className="font-medium text-primary hover:underline">
                         Sign in

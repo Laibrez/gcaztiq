@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, XCircle, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { RollioAnimatedLogo } from '@/components/RollioLogo';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { RollioLogo } from '@/components/RollioLogo';
 
 const API = import.meta.env.VITE_API_URL || 'https://caztiq-api-production.up.railway.app';
 
@@ -32,7 +32,6 @@ export default function InvitePage() {
   const [errorType, setErrorType]   = useState<ErrorType>('unknown');
   const [info, setInfo]             = useState<InviteInfo | null>(null);
 
-  // W-9 fields
   const [legalName,  setLegalName]  = useState('');
   const [street,     setStreet]     = useState('');
   const [city,       setCity]       = useState('');
@@ -94,7 +93,7 @@ export default function InvitePage() {
 
   const errorMessages: Record<ErrorType, { title: string; msg: string }> = {
     invalid_token:     { title: 'Invalid link',    msg: 'This invitation link is invalid or has expired. Contact the brand for a new one.' },
-    already_confirmed: { title: 'Already done!',   msg: 'You\'ve already completed your tax setup. You\'re all set to receive payments.' },
+    already_confirmed: { title: 'Already done!',   msg: "You've already completed your tax setup. You're all set to receive payments." },
     unknown:           { title: 'Something went wrong', msg: 'Please try again or contact support.' },
   };
 
@@ -105,20 +104,18 @@ export default function InvitePage() {
       <div className="w-full max-w-md">
 
         {/* Logo */}
-        <div className="mb-8 flex justify-center">
-          <div className="flex items-center gap-2">
-            <RollioLogo className="h-10 w-10" />
-            <span className="text-lg font-semibold text-foreground">Rollio Payments</span>
-          </div>
+        <div className="mb-8 flex items-center justify-center gap-2.5 animate-fade-up">
+          <RollioAnimatedLogo size={44} float />
+          <span className="text-xl font-semibold tracking-tight text-foreground">Rollio</span>
         </div>
 
-        <div className="rounded-2xl border border-[#E8E6DF] bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
 
           {/* Loading */}
           {step === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-8">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm text-[#6B6B65]">Loading your invitation…</p>
+              <p className="text-sm text-muted-foreground">Loading your invitation…</p>
             </div>
           )}
 
@@ -127,10 +124,10 @@ export default function InvitePage() {
             <div className="flex flex-col items-center gap-4 text-center py-4">
               {errorType === 'already_confirmed'
                 ? <CheckCircle2 className="h-12 w-12 text-status-paid" />
-                : <XCircle className="h-12 w-12 text-red-400" />
+                : <XCircle className="h-12 w-12 text-destructive" />
               }
-              <h2 className="text-xl font-bold text-[#1A1A18]">{errorMessages[errorType].title}</h2>
-              <p className="text-sm text-[#6B6B65]">{errorMessages[errorType].msg}</p>
+              <h2 className="text-xl font-bold text-foreground">{errorMessages[errorType].title}</h2>
+              <p className="text-sm text-muted-foreground">{errorMessages[errorType].msg}</p>
             </div>
           )}
 
@@ -138,41 +135,39 @@ export default function InvitePage() {
           {step === 'us-confirm' && info && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-[#6B6B65]">Invitation from</p>
-                <h2 className="text-xl font-bold text-[#1A1A18]">{info.brand_name}</h2>
+                <p className="text-sm text-muted-foreground">Invitation from</p>
+                <h2 className="text-xl font-bold text-foreground">{info.brand_name}</h2>
               </div>
-              <p className="text-sm text-[#6B6B65]">
-                Hi <strong className="text-[#1A1A18]">{info.creator_name}</strong> 👋 — before you can receive payments,
+              <p className="text-sm text-muted-foreground">
+                Hi <strong className="text-foreground">{info.creator_name}</strong> 👋 — before you can receive payments,
                 we need to collect your tax information. Are you US-based or international?
               </p>
 
               <div className="space-y-3">
-                {/* US option */}
                 <button
                   onClick={() => setStep('w9-form')}
                   className="w-full flex items-center gap-4 rounded-xl border-2 border-border p-4 text-left transition-colors hover:border-primary hover:bg-primary/5"
                 >
                   <span className="text-2xl">🇺🇸</span>
                   <div>
-                    <p className="font-semibold text-[#1A1A18]">US-based</p>
-                    <p className="text-xs text-[#6B6B65]">Fill out a W-9 — takes 2 minutes</p>
+                    <p className="font-semibold text-foreground">US-based</p>
+                    <p className="text-xs text-muted-foreground">Fill out a W-9 — takes 2 minutes</p>
                   </div>
                 </button>
 
-                {/* International option — coming soon */}
-                <div className="w-full flex items-center gap-4 rounded-xl border-2 border-[#E8E6DF] p-4 text-left opacity-60 cursor-not-allowed">
+                <div className="w-full flex items-center gap-4 rounded-xl border-2 border-border p-4 text-left opacity-60 cursor-not-allowed">
                   <span className="text-2xl">🌍</span>
                   <div className="flex-1">
-                    <p className="font-semibold text-[#1A1A18]">International</p>
-                    <p className="text-xs text-[#6B6B65]">W-8BEN — not available yet</p>
+                    <p className="font-semibold text-foreground">International</p>
+                    <p className="text-xs text-muted-foreground">W-8BEN — not available yet</p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-[#F9F8F4] border border-[#E8E6DF] px-2.5 py-0.5 text-xs font-medium text-[#6B6B65]">
+                  <span className="shrink-0 rounded-full bg-muted border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                     Coming soon
                   </span>
                 </div>
               </div>
 
-              <p className="text-center text-xs text-[#9B9B95]">
+              <p className="text-center text-xs text-muted-foreground/70">
                 International support is coming soon. Email <a href="mailto:support@rollio.com" className="underline">support@rollio.com</a> if you need help.
               </p>
             </div>
@@ -182,49 +177,32 @@ export default function InvitePage() {
           {step === 'w9-form' && info && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-xl font-bold text-[#1A1A18]">Tax Information (W-9)</h2>
-                <div className="mt-2 flex items-center gap-1.5 text-xs text-[#6B6B65]">
+                <h2 className="text-xl font-bold text-foreground">Tax Information (W-9)</h2>
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="h-3.5 w-3.5 text-primary shrink-0" />
                   Your information is encrypted and secure.
                 </div>
               </div>
 
               <div className="space-y-4">
-
-                {/* Full Legal Name */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">Full Legal Name</Label>
-                  <Input
-                    value={legalName}
-                    onChange={e => setLegalName(e.target.value)}
-                    placeholder="As it appears on tax documents"
-                  />
+                  <Label className="text-sm font-medium text-foreground">Full Legal Name</Label>
+                  <Input value={legalName} onChange={e => setLegalName(e.target.value)} placeholder="As it appears on tax documents" />
                 </div>
 
-                {/* Street */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">Street Address</Label>
-                  <Input
-                    value={street}
-                    onChange={e => setStreet(e.target.value)}
-                    placeholder="123 Main St"
-                  />
+                  <Label className="text-sm font-medium text-foreground">Street Address</Label>
+                  <Input value={street} onChange={e => setStreet(e.target.value)} placeholder="123 Main St" />
                 </div>
 
-                {/* City */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">City</Label>
-                  <Input
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
-                    placeholder="City"
-                  />
+                  <Label className="text-sm font-medium text-foreground">City</Label>
+                  <Input value={city} onChange={e => setCity(e.target.value)} placeholder="City" />
                 </div>
 
-                {/* State + ZIP */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-medium text-[#1A1A18]">State</Label>
+                    <Label className="text-sm font-medium text-foreground">State</Label>
                     <select
                       value={state}
                       onChange={e => setState_(e.target.value)}
@@ -237,7 +215,7 @@ export default function InvitePage() {
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-medium text-[#1A1A18]">ZIP Code</Label>
+                    <Label className="text-sm font-medium text-foreground">ZIP Code</Label>
                     <Input
                       value={zip}
                       onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
@@ -247,9 +225,8 @@ export default function InvitePage() {
                   </div>
                 </div>
 
-                {/* SSN / EIN */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-[#1A1A18]">SSN or EIN</Label>
+                  <Label className="text-sm font-medium text-foreground">SSN or EIN</Label>
                   <Input
                     type="password"
                     value={ssn}
@@ -257,10 +234,9 @@ export default function InvitePage() {
                     placeholder="•••-••-____"
                     autoComplete="off"
                   />
-                  <p className="text-xs text-[#9B9B95]">Required for payments over $600/year. Encrypted at rest.</p>
+                  <p className="text-xs text-muted-foreground/70">Required for payments over $600/year. Encrypted at rest.</p>
                 </div>
 
-                {/* Certification */}
                 <label className={cn(
                   'flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors',
                   certified ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/60'
@@ -269,16 +245,15 @@ export default function InvitePage() {
                     type="checkbox"
                     checked={certified}
                     onChange={e => setCertified(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 accent-[#1A1A18] shrink-0"
+                    className="mt-0.5 h-4 w-4 accent-primary shrink-0"
                   />
-                  <span className="text-sm text-[#6B6B65] leading-relaxed">
+                  <span className="text-sm text-muted-foreground leading-relaxed">
                     I certify under penalty of perjury that the information I have provided is correct and complete.
                   </span>
                 </label>
 
-                {/* Error message */}
                 {fieldError && (
-                  <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{fieldError}</p>
+                  <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{fieldError}</p>
                 )}
               </div>
 
@@ -299,12 +274,12 @@ export default function InvitePage() {
           {step === 'success' && info && (
             <div className="flex flex-col items-center gap-4 text-center py-4">
               <CheckCircle2 className="h-16 w-16 text-status-paid" />
-              <h2 className="text-xl font-bold text-[#1A1A18]">You're all set! ✓</h2>
-              <p className="text-sm text-[#6B6B65]">
+              <h2 className="text-xl font-bold text-foreground">You're all set! ✓</h2>
+              <p className="text-sm text-muted-foreground">
                 Your tax information has been received. You'll get an email notification
-                each time <strong className="text-[#1A1A18]">{info.brand_name}</strong> sends you a payment.
+                each time <strong className="text-foreground">{info.brand_name}</strong> sends you a payment.
               </p>
-              <p className="text-xs text-[#9B9B95] mt-2">You can close this page.</p>
+              <p className="text-xs text-muted-foreground/70 mt-2">You can close this page.</p>
             </div>
           )}
 
