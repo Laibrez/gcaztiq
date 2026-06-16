@@ -35,7 +35,7 @@ export function RollioAnimatedLogo({ size = 48, float = false, className }: Logo
   const h = Math.round(size * 120 / 150);
   return (
     <svg
-      viewBox="0 0 150 120"
+      viewBox="-4 0 150 120"
       width={size}
       height={h}
       className={className}
